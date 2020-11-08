@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonJS",
+    "target": "es5",
+    "baseUrl": "./src",
+    "paths": {
+      "components" : ["./components"],
+      "pages" : ["./pages"],
+      "routes" : ["./routes"]
+    }
+  }
+}
