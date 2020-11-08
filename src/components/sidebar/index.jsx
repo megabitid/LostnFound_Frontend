@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Logo from "../../assets/logo.png";
 import Profile from "../../assets/profile.png";
 import { Layout, Menu, Avatar, Typography } from "antd";
@@ -12,14 +12,6 @@ const { Content, Sider } = Layout;
 const { Text } = Typography;
 
 function Index(props) {
-  const { selectedKey, setSelectedKey } = useState("");
-
-  useEffect(() => {
-    let path_name = window.location.pathname
-    // setSelectedKey(path_name)
-  });
-
- 
   return (
     <div>
       <Layout style={{ height: "100vh" }}>
@@ -27,7 +19,7 @@ function Index(props) {
           <Menu
             mode="inline"
             style={{ height: "100%", borderRight: 0 }}
-            defaultSelectedKeys={[selectedKey]}
+            defaultSelectedKeys={[window.location.pathname]}
           >
             <img
               src={Logo}
@@ -49,15 +41,12 @@ function Index(props) {
             </div>
             <Menu.Item icon={<DashboardOutlined />} key="/dashboard">
               <Link to="/dashboard"> Dashboard</Link>
-              {/* das */}
             </Menu.Item>
             <Menu.Item icon={<QuestionCircleOutlined />} key="/lost">
               <Link to="/lost">Barang Hilang</Link>
-              {/* hi */}
             </Menu.Item>
             <Menu.Item icon={<CheckCircleOutlined />} key="/found">
               <Link to="/found">Barang Ditemukan</Link>
-              {/* tem */}
             </Menu.Item>
           </Menu>
         </Sider>
