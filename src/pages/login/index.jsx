@@ -14,11 +14,11 @@ function index(props) {
       <img
         src={Logo}
         alt=""
-        width="200px"
-        style={{ marginTop: "50px" }}
+        width="236px"
+        style={{ marginTop: "80px" }}
       />
 
-      <h1 style={{ fontSize: "42px", fontWeight: "500", margin: "16px 0" }}>Login admin</h1>
+      <h1 style={{ fontSize: "48px", fontWeight: "500", margin: "24px 0" }}>Login admin</h1>
 
       <Col
         span={8} offset={8}
@@ -65,9 +65,10 @@ function index(props) {
                 style={{
                   float: "right",
                   fontWeight: 500,
-                  padding: "20px 32px",
+                  padding: "22px 32px",
                   lineHeight: 0,
-                  backgroundColor: "#1b68b1"
+                  backgroundColor: "#1b68b1",
+                  borderRadius: "3px"
                 }}
               >
                 Login
