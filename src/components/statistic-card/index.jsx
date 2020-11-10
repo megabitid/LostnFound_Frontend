@@ -11,7 +11,7 @@ function index({stats, title, change, isIncreased}) {
       >
          <Title style={{fontSize: 64, marginBottom: 16}}>{ stats }</Title>
          <Text strong style={ { display: "block" } }>{ title }</Text>
-         <Text>
+         <Text style={{color: "#9E9EA7"}}>
             { isIncreased
                ? <span style={{color: "#02C038"}}>&uarr; { change }% </span>
                : <span style={{color: "#FF5858"}}>&darr; { change }% </span>
