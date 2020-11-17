@@ -1,6 +1,7 @@
+import { Typography } from 'antd';
 import React from "react";
+import DataTable from "../../components/data-table";
 import Sidebar from "../../components/sidebar";
-import {Typography} from 'antd'
 const { Title } = Typography;
 
 function index(props) {
@@ -10,6 +11,7 @@ function index(props) {
         content={
           <div>
               <Title>Barang Ditemukan</Title>
+              <DataTable/>
           </div>
         }
       />
