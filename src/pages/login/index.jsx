@@ -5,34 +5,35 @@ import { Col, Card, Form, Input, Button, notification } from "antd"
 import Logo from "../../assets/logo.png";
 import Axios from 'axios';
 
-
-function Index(props) {
+function Index() {
 
   const [user, setUser] = useContext(Auth)
 
+  const onFinish = async (value) => {
 
+      try {
 
+          let res = await Axios.post(
+              "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/login",
+              { nip: value.nip, password: value.password }
+          )
 
-  const onFinish = (value) => {
-    console.log(value);
+          console.log(res.data);
 
-    Axios.post("https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/login", { nip: value.nip, password: value.password })
-      .then((res) => {
-        console.log(res.data);
-        let currentUser = res.data;
-        setUser(currentUser);
-        localStorage.setItem("user", JSON.stringify(currentUser));
-      })
-      .catch((e) => {
-        console.log(e);
-        notification["error"]({
-          message: "Gagal login",
-          description: e.message
-        })
-      })
+          let currentUser = res.data;
 
+          setUser(currentUser);
+
+          localStorage.setItem("user", JSON.stringify(currentUser));
+
+      } catch (e) {
+
+          notification["error"]({
+              message: "Gagal login",
+              description: e.message
+          })
+      }
   }
-
 
   return user !== null
     ? <Redirect to={"/dashboard"} />
