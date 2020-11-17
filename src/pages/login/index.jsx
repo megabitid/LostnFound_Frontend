@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Auth } from "../../modules/context"
 import { Redirect } from "react-router-dom"
 import { Col, Card, Form, Input, Button, notification } from "antd"
@@ -7,11 +7,14 @@ import Axios from 'axios';
 
 function Index() {
 
-  const [user, setUser] = useContext(Auth)
+    const [isLoading, setLoading] = useState(false);
+    const [user, setUser]         = useContext(Auth)
 
-  const onFinish = async (value) => {
+    const onFinish = async (value) => {
 
       try {
+
+          setLoading(true);
 
           let res = await Axios.post(
               "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/login",
@@ -32,6 +35,9 @@ function Index() {
               message: "Gagal login",
               description: e.message
           })
+      } finally {
+
+          setLoading(false)
       }
   }
 
@@ -74,7 +80,7 @@ function Index() {
                 name="nip"
                 requiredMark="optional"
                 rules={[{ required: true, message: 'Mohon masukkan nomor induk pegawai anda!' }]}
-              >
+               >
                 <Input
                   placeholder="Masukkan nomor induk pegawai anda"
                   style={{ borderRadius: "3px", padding: "12px" }}
@@ -94,22 +100,20 @@ function Index() {
               </Form.Item>
 
               <Form.Item style={{ margin: 0 }}  >
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    float: "right",
-                    fontWeight: 500,
-                    padding: "22px 32px",
-                    lineHeight: 0,
-                    backgroundColor: "#1b68b1",
-                    borderRadius: "3px"
-                  }}
-                >
-                  Login
-              </Button>
+                  <div style={{textAlign: "right"}}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      style={{
+                        backgroundColor: "#1b68b1",
+                        borderRadius: "3px"
+                      }}
+                      loading={isLoading}
+                    >
+                      Login
+                  </Button>
+                  </div>
               </Form.Item>
-
             </Form>
           </Card>
         </Col>
