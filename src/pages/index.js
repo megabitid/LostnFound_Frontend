@@ -1,4 +1,4 @@
 import Login from './login'
 import Dashboard from './dashboard'
-
-export {Login, Dashboard}
+import Claim from './claim'
+export {Login, Dashboard, Claim}

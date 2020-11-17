@@ -1,23 +1,54 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
+import axios from "axios";
+import swal from "sweetalert";
 import Logo from "../../assets/logo.png";
 import Profile from "../../assets/profile.png";
 import { Layout, Menu, Avatar, Typography } from "antd";
-import {
-  DashboardOutlined,
-  QuestionCircleOutlined,
-  CheckCircleOutlined,
-} from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import {Auth} from "../../modules/context";
+import { Auth } from "../../modules/context";
 const { Content, Sider } = Layout;
 const { Text } = Typography;
 
 function Index(props) {
+  const [user] = useContext(Auth);
 
-  const [user]  = useContext(Auth);
+  console.log(user);
 
+  async function logoutHandler() {
+    const headers = {
+      Authorization: `Bearer ${user.token}`,
+    };
 
-  console.log(user)
+    swal({
+      title: "LOG OUT",
+      text: "Apakah anda yakin ingin Log Out dari aplikasi ini ?",
+      buttons: ["Tidak", "Ya"],
+      dangerMode: true,
+    }).then((removeData) => {
+      if (removeData) {
+        axios
+          .post(
+            "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/logout",
+            [],
+            { headers }
+          )
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+        console.log(headers);
+      } else {
+        return;
+      }
+    });
+  }
+
+  const iconStyle = {
+    position: "absolute",
+    top: "-1px",
+    fontSize: "1.2rem",
+    color: "#8A8A8A",
+  };
+
+  const iconText = { marginLeft: "1.5rem" };
 
   return (
     <div>
@@ -46,24 +77,77 @@ function Index(props) {
               </Text>
               <h5>Admin Stasiun Gambir</h5>
             </div>
-            <Menu.Item icon={<DashboardOutlined />} key="/dashboard">
-              <Link to="/dashboard"> Dashboard</Link>
+            <Menu.Item
+              icon={<i class="ri-dashboard-fill" style={iconStyle}></i>}
+              key="/dashboard"
+            >
+              <Link to="/dashboard" style={iconText}>
+                {" "}
+                Dashboard
+              </Link>
             </Menu.Item>
-            <Menu.Item icon={<QuestionCircleOutlined />} key="/lost">
-              <Link to="/lost">Barang Hilang</Link>
+            <Menu.Item
+              icon={<i class="ri-question-fill" style={iconStyle}></i>}
+              key="/lost"
+            >
+              <Link to="/lost" style={iconText}>
+                Barang hilang
+              </Link>
             </Menu.Item>
-            <Menu.Item icon={<CheckCircleOutlined />} key="/found">
-              <Link to="/found">Barang Ditemukan</Link>
+            <Menu.Item
+              icon={<i class="ri-checkbox-circle-fill" style={iconStyle}></i>}
+              key="/found"
+            >
+              <Link to="/found" style={iconText}>
+                Barang ditemukan
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              icon={<i class="ri-folder-info-fill" style={iconStyle}></i>}
+              key="/claim"
+            >
+              <Link to="/claim" style={iconText}>
+                Permintaan klaim
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              icon={<i class="ri-hand-coin-fill" style={iconStyle}></i>}
+              key="/claimed"
+            >
+              <Link to="/claimed" style={iconText}>
+                Barang diklaim
+              </Link>
             </Menu.Item>
 
-            {
-              user.role === 1 && (
-                  <Menu.Item icon={<CheckCircleOutlined />} key="/testing">
-                    <Link to="/tambah-barang">Tambah Barang</Link>
-                  </Menu.Item>
-              )
-            }
+            {user.role === 2 && (
+              <Menu
+                mode="inline"
+                style={{ height: "100%", borderRight: 0 }}
+                defaultSelectedKeys={[window.location.pathname]}
+              >
+                <Menu.Item
+                  icon={<i class="ri-gift-fill" style={iconStyle}></i>}
+                  key="/donated"
+                >
+                  <Link to="/donated" style={iconText}>
+                    Barang didonasikan
+                  </Link>
+                </Menu.Item>
+                <Menu.Item
+                  icon={<i class="ri-user-fill" style={iconStyle}></i>}
+                  key="/admins"
+                >
+                  <Link to="/admins" style={iconText}>
+                    Data Admin
+                  </Link>
+                </Menu.Item>
+              </Menu>
+            )}
 
+            <p className="logout-style" onClick={logoutHandler}>
+              <i class="ri-logout-box-fill" style={iconStyle}></i>
+              <span style={iconText}>Logout</span>
+            </p>
           </Menu>
         </Sider>
         <Layout style={{ padding: "0 24px 24px" }}>
