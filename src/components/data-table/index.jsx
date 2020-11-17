@@ -1,24 +1,31 @@
-import { DeleteOutlined, EllipsisOutlined, FileSearchOutlined } from '@ant-design/icons';
-import { Button, Popover, Space, Table, Typography } from 'antd';
+import { DeleteOutlined, EllipsisOutlined, FileSearchOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Input, Popover, Select, Space, Table, Typography } from 'antd';
 import React from 'react';
 
 const { Text } = Typography;
+const { Option } = Select;
 
 export default function index() {
 
-   // TO DO: handle each button click
+   // TO DO: button handler
    const showPhoto = () => {
       alert("Showing Photo")
    }
 
-   const itemDetails = () => {
+   const dataDetails = () => {
       alert("Detail")
    }
 
-   const itemDelete = () => {
+   const deleteData = () => {
       alert("Deleted")
    }
 
+   const addData = () => {
+      alert("Deleted")
+   }
+
+
+   // Table filter
 
 
 
@@ -26,10 +33,10 @@ export default function index() {
    // Actions button content
    const content = (
       <Space direction="vertical">
-         <Button type="text" icon={<FileSearchOutlined />} onClick={itemDetails}>
+         <Button type="text" icon={ <FileSearchOutlined /> } onClick={ dataDetails }>
             Detail
          </Button>
-         <Button type="text" icon={<DeleteOutlined />} onClick={itemDelete}>
+         <Button type="text" icon={ <DeleteOutlined /> } onClick={ deleteData }>
             Hapus
          </Button>
       </Space>
@@ -37,10 +44,10 @@ export default function index() {
 
    const columns = [
       {
-			title: "No",
-			dataIndex: "no",
-			key: "no",
-		},
+         title: "No",
+         dataIndex: "no",
+         key: "no",
+      },
       {
          title: 'Nama barang',
          dataIndex: 'name',
@@ -66,7 +73,7 @@ export default function index() {
          dataIndex: 'photo',
          key: 'photo',
          render: text => (
-            <Button type="link" style={{textDecoration: "underline"}} onClick={showPhoto}>
+            <Button type="link" style={ { textDecoration: "underline" } } onClick={ showPhoto }>
                Lihat Foto
             </Button>
          ),
@@ -77,8 +84,8 @@ export default function index() {
          key: 'status',
          render: text => (
             <Text
-               style={{color: `${text === "Ditemukan" ? "#01AC13" : "#E24343"}`}}>
-               {text}
+               style={ { color: `${text === "Ditemukan" ? "#01AC13" : "#E24343"}` } }>
+               {text }
             </Text>
          ),
       },
@@ -88,9 +95,9 @@ export default function index() {
          key: 'id',
          render: (text, record) => (
             <Popover content={ content }>
-               <Button type="text" icon={<EllipsisOutlined />} />
+               <Button type="text" icon={ <EllipsisOutlined /> } />
             </Popover>
-        ),
+         ),
       },
    ];
 
@@ -115,7 +122,7 @@ export default function index() {
       },
       {
          id: '3',
-         name: 'Ransel Expsort',
+         name: 'Ransel Exsport',
          date: '05 Nov 2020',
          location: 'Stasiun Gambir',
          category: 'Tas & Dompet',
@@ -142,10 +149,22 @@ export default function index() {
       },
    ];
 
-   const dataWithIndex = data.map((el, index) => ({no: index + 1, ...el}))
+   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }))
 
    return (
       <div>
+         <Space style={ { marginBottom: 16, width: "100%", justifyContent: "space-between" } }>
+            <Space size="large">
+               <Input size="large" placeholder="Cari di tabel" prefix={ <SearchOutlined /> } />
+               <DatePicker size="large" placeholder="Pilih tanggal" />
+               <Select size="large" placeholder="Kategori" style={{ width: 169 }}>
+                  <Option value="bag-wallet">Tas & Dompet</Option>
+                  <Option value="other">Lain-lain</Option>
+                  <Option value="electronic">Elektronik</Option>
+               </Select>
+            </Space>
+            <Button type="primary" size="large" onClick={ addData }>Input data</Button>
+         </Space>
          <Table columns={ columns } dataSource={ dataWithIndex } />
       </div>
    )
