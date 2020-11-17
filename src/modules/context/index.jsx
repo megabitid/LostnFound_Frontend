@@ -1,15 +1,29 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 
 export const Auth = createContext();
 
 export const AuthProvider = props => {
-    const currentUser = JSON.parse(localStorage.getItem("user"))
-    const iniateUser = currentUser ? currentUser : null
-    const [user, setUser] = useState(iniateUser);
+
+    const [user, setUser]         = useState(null);
+    const [isLoading, setLoading] = useState(false);
+
+   useEffect(() => {
+
+       setLoading(true);
+
+       const currentUser = JSON.parse(localStorage.getItem("user"));
+
+       const iniateUser  = currentUser || null;
+
+       setUser(iniateUser);
+
+       setLoading(false);
+
+   }, []);
 
     return (
         <Auth.Provider value={[user, setUser]}>
-            {props.children}
+            { !isLoading && props.children}
         </Auth.Provider>
     );
 };

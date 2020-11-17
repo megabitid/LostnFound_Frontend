@@ -1,119 +1,122 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Auth } from "../../modules/context"
 import { Redirect } from "react-router-dom"
 import { Col, Card, Form, Input, Button, notification } from "antd"
 import Logo from "../../assets/logo.png";
 import Axios from 'axios';
 
+function Index() {
 
-function Index(props) {
+    const [isLoading, setLoading] = useState(false);
+    const [user, setUser]         = useContext(Auth);
 
-  const [user, setUser] = useContext(Auth)
+    const onFinish = async (value) => {
 
+      try {
 
+          setLoading(true);
 
+          let res = await Axios.post(
+              "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/login",
+              { nip: value.nip, password: value.password }
+          )
 
-  const onFinish = (value) => {
-    console.log(value);
+          let currentUser = res.data;
 
-    Axios.post("https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/login", { nip: value.nip, password: value.password })
-      .then((res) => {
-        console.log(res.data);
-        let currentUser = res.data;
-        setUser(currentUser);
-        localStorage.setItem("user", JSON.stringify(currentUser));
-      })
-      .catch((e) => {
-        console.log(e);
-        notification["error"]({
-          message: "Gagal login",
-          description: e.message
-        })
-      })
+          localStorage.setItem("user", JSON.stringify(currentUser));
 
+          setUser(currentUser);
+
+      } catch (e) {
+
+          notification["error"]({
+              message: "Gagal login",
+              description: e.message
+          })
+      } finally {
+
+          setLoading(false)
+      }
   }
 
+    return user
+        ? <Redirect to={"/dashboard"} />
+        : (
+          <div style={{
+            backgroundColor: "#f7f8fc",
+            textAlign: "center",
+            fontFamily: "poppins",
+            height: "100vh"
+          }} >
 
-  return user !== null
-    ? <Redirect to={"/dashboard"} />
-    : (
-      <div style={{
-        backgroundColor: "#f7f8fc",
-        textAlign: "center",
-        fontFamily: "poppins",
-        height: "100vh"
-      }} >
+            <img
+              src={Logo}
+              alt=""
+              width="236px"
+              style={{ marginTop: "80px" }}
+            />
 
-        <img
-          src={Logo}
-          alt=""
-          width="236px"
-          style={{ marginTop: "80px" }}
-        />
+            <h1 style={{ fontSize: "48px", fontWeight: "500", margin: "24px 0" }}>Login admin</h1>
 
-        <h1 style={{ fontSize: "48px", fontWeight: "500", margin: "24px 0" }}>Login admin</h1>
-
-        <Col
-          span={8} offset={8}
-        >
-          <Card
-            style={{
-              boxShadow: "0px 0px 30px rgba(0, 9, 44, 0.1)",
-              borderRadius: "5px",
-              padding: "8px"
-            }}
-          >
-            <Form
-              layout="vertical"
-              style={{ fontWeight: "500", textAlign: "left" }}
-              onFinish={onFinish}
+            <Col
+              span={8} offset={8}
             >
-              <Form.Item
-                label="NIP"
-                name="nip"
-                requiredMark="optional"
-                rules={[{ required: true, message: 'Mohon masukkan nomor induk pegawai anda!' }]}
+              <Card
+                style={{
+                  boxShadow: "0px 0px 30px rgba(0, 9, 44, 0.1)",
+                  borderRadius: "5px",
+                  padding: "8px"
+                }}
               >
-                <Input
-                  placeholder="Masukkan nomor induk pegawai anda"
-                  style={{ borderRadius: "3px", padding: "12px" }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Password"
-                name="password"
-                requiredMark="optional"
-                rules={[{ required: true, message: 'Mohon masukkan password anda!' }]}
-              >
-                <Input.Password
-                  placeholder="Masukkan password anda"
-                  style={{ borderRadius: "3px", padding: "12px" }}
-                />
-              </Form.Item>
-
-              <Form.Item style={{ margin: 0 }}  >
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    float: "right",
-                    fontWeight: 500,
-                    padding: "22px 32px",
-                    lineHeight: 0,
-                    backgroundColor: "#1b68b1",
-                    borderRadius: "3px"
-                  }}
+                <Form
+                  layout="vertical"
+                  style={{ fontWeight: "500", textAlign: "left" }}
+                  onFinish={onFinish}
                 >
-                  Login
-              </Button>
-              </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nip"
+                    requiredMark="optional"
+                    rules={[{ required: true, message: 'Mohon masukkan nomor induk pegawai anda!' }]}
+                   >
+                    <Input
+                      placeholder="Masukkan nomor induk pegawai anda"
+                      style={{ borderRadius: "3px", padding: "12px" }}
+                    />
+                  </Form.Item>
 
-            </Form>
-          </Card>
-        </Col>
-      </div >
-    );
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    requiredMark="optional"
+                    rules={[{ required: true, message: 'Mohon masukkan password anda!' }]}
+                  >
+                    <Input.Password
+                      placeholder="Masukkan password anda"
+                      style={{ borderRadius: "3px", padding: "12px" }}
+                    />
+                  </Form.Item>
+
+                  <Form.Item style={{ margin: 0 }}  >
+                      <div style={{textAlign: "right"}}>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          style={{
+                            backgroundColor: "#1b68b1",
+                            borderRadius: "3px"
+                          }}
+                          loading={isLoading}
+                        >
+                          Login
+                      </Button>
+                      </div>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Col>
+          </div >
+        );
 }
 
 export default Index;
