@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import Logo from "../../assets/logo.png";
 import Profile from "../../assets/profile.png";
 import { Layout, Menu, Avatar, Typography } from "antd";
@@ -8,10 +8,17 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import {Auth} from "../../modules/context";
 const { Content, Sider } = Layout;
 const { Text } = Typography;
 
 function Index(props) {
+
+  const [user]  = useContext(Auth);
+
+
+  console.log(user)
+
   return (
     <div>
       <Layout style={{ height: "100vh" }}>
@@ -48,6 +55,15 @@ function Index(props) {
             <Menu.Item icon={<CheckCircleOutlined />} key="/found">
               <Link to="/found">Barang Ditemukan</Link>
             </Menu.Item>
+
+            {
+              user.role === 1 && (
+                  <Menu.Item icon={<CheckCircleOutlined />} key="/testing">
+                    <Link to="/tambah-barang">Tambah Barang</Link>
+                  </Menu.Item>
+              )
+            }
+
           </Menu>
         </Sider>
         <Layout style={{ padding: "0 24px 24px" }}>
