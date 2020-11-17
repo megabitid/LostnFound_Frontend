@@ -11,7 +11,8 @@ const Router = () => {
     <AuthProvider>
       <BrowserRouter>
         <Switch>
-          <Route exact path={"/dashboard"} component={Dashboard} />
+          <Route exact path={"/"} component={Login} />
+          <Route  path={"/dashboard"} component={Dashboard} />
           <Route path={"/login"} component={Login} />
           <Route path={"/lost"} component={Lost} />
           <Route path={"/found"} component={Found} />
