@@ -1,6 +1,9 @@
 import { DeleteOutlined, EllipsisOutlined, FileSearchOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Input, Popover, Select, Space, Table, Typography } from 'antd';
 import React from 'react';
+import swal from "sweetalert"
+
+import deleteIcon from "../../assets/deleteIcon.png"
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -17,7 +20,26 @@ export default function index() {
    }
 
    const deleteData = () => {
-      alert("Deleted")
+      swal({
+         className: "alert-delete",
+         icon: deleteIcon,
+         title: "Hapus data dari tabel ?",
+         text: "Setelah dihapus, data tersebut tidak akan muncul di dalam tabel",
+         dangerMode: true,
+         buttons: {
+            cancel: {
+               text: "Batal",
+               visible: true,
+               className: "cancel-button",
+            },
+            confirm: {
+               text: "Hapus",
+               value: true,
+               visible: true,
+            }
+         }
+
+      })
    }
 
    const addData = () => {
@@ -33,10 +55,10 @@ export default function index() {
    // Actions button content
    const content = (
       <Space direction="vertical">
-         <Button type="text" icon={ <FileSearchOutlined /> } onClick={ dataDetails }>
+         <Button type="text" icon={<FileSearchOutlined />} onClick={dataDetails}>
             Detail
          </Button>
-         <Button type="text" icon={ <DeleteOutlined /> } onClick={ deleteData }>
+         <Button type="text" icon={<DeleteOutlined />} onClick={deleteData}>
             Hapus
          </Button>
       </Space>
@@ -73,7 +95,7 @@ export default function index() {
          dataIndex: 'photo',
          key: 'photo',
          render: text => (
-            <Button type="link" style={ { textDecoration: "underline" } } onClick={ showPhoto }>
+            <Button type="link" style={{ textDecoration: "underline" }} onClick={showPhoto}>
                Lihat Foto
             </Button>
          ),
@@ -84,8 +106,8 @@ export default function index() {
          key: 'status',
          render: text => (
             <Text
-               style={ { color: `${text === "Ditemukan" ? "#01AC13" : "#E24343"}` } }>
-               {text }
+               style={{ color: `${text === "Ditemukan" ? "#01AC13" : "#E24343"}` }}>
+               {text}
             </Text>
          ),
       },
@@ -94,8 +116,8 @@ export default function index() {
          dataIndex: 'id',
          key: 'id',
          render: (text, record) => (
-            <Popover content={ content }>
-               <Button type="text" icon={ <EllipsisOutlined /> } />
+            <Popover content={content}>
+               <Button type="text" icon={<EllipsisOutlined />} />
             </Popover>
          ),
       },
@@ -153,9 +175,9 @@ export default function index() {
 
    return (
       <div>
-         <Space style={ { marginBottom: 16, width: "100%", justifyContent: "space-between" } }>
+         <Space style={{ marginBottom: 16, width: "100%", justifyContent: "space-between" }}>
             <Space size="large">
-               <Input size="large" placeholder="Cari di tabel" prefix={ <SearchOutlined /> } />
+               <Input size="large" placeholder="Cari di tabel" prefix={<SearchOutlined />} />
                <DatePicker size="large" placeholder="Pilih tanggal" />
                <Select size="large" placeholder="Kategori" style={{ width: 169 }}>
                   <Option value="bag-wallet">Tas & Dompet</Option>
@@ -163,9 +185,9 @@ export default function index() {
                   <Option value="electronic">Elektronik</Option>
                </Select>
             </Space>
-            <Button type="primary" size="large" onClick={ addData }>Input data</Button>
+            <Button type="primary" size="large" onClick={addData}>Input data</Button>
          </Space>
-         <Table columns={ columns } dataSource={ dataWithIndex } />
+         <Table columns={columns} dataSource={dataWithIndex} />
       </div>
    )
 }
