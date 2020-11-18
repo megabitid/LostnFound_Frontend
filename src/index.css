@@ -14,3 +14,35 @@
 .logout-style:hover{
   color: #608AC4;
 }
+
+/* Alert Delete Styling */
+
+.alert-delete{
+  width: 260px;
+}
+
+.alert-delete .swal-icon{
+  margin-bottom: 10px;
+}
+.alert-delete .swal-title{
+  font-size: 16px;
+  color: #000;
+}
+.alert-delete .swal-text {
+  text-align: center;
+  font-size: 14px;
+  color: #8A8A8A;
+}
+
+.alert-delete .swal-footer{
+  text-align: center;
+}
+
+.alert-delete .swal-button{
+width: 100px;
+}
+
+.alert-delete .cancel-button{
+  background-color: #fff;
+  border: 1px solid #dadadc;
+}
