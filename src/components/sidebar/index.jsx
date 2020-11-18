@@ -16,7 +16,7 @@ function Index(props) {
 
   async function logoutHandler() {
     const headers = {
-      Authorization: `Bearer ${user.token}`,
+      'Authorization': `Bearer ${user.token}`,
     };
 
     swal({
@@ -26,13 +26,18 @@ function Index(props) {
       dangerMode: true,
     }).then((removeData) => {
       if (removeData) {
-        axios
-          .post(
-            "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/logout",
-            [],
-            { headers }
-          )
-          .then((res) => console.log(res))
+        let config = {
+          method: 'get',
+          url : 'https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/logout',
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+          }
+        }
+        axios(config)
+          .then((res) => {
+            localStorage.clear()
+            window.location.href = '/login'
+          })
           .catch((err) => console.log(err));
         console.log(headers);
       } else {
