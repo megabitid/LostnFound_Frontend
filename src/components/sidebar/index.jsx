@@ -39,7 +39,6 @@ function Index(props) {
             window.location.href = '/login'
           })
           .catch((err) => console.log(err));
-        console.log(headers);
       } else {
         return;
       }
@@ -87,7 +86,6 @@ function Index(props) {
               key="/dashboard"
             >
               <Link to="/dashboard" style={iconText}>
-                {" "}
                 Dashboard
               </Link>
             </Menu.Item>

@@ -4,6 +4,8 @@
   text-align: center;
 }
 
+/* LOGOUT STYLING */
+
 .logout-style {
   padding-left: 24px;
   position: absolute;
@@ -45,4 +47,11 @@ width: 100px;
 .alert-delete .cancel-button{
   background-color: #fff;
   border: 1px solid #dadadc;
+}
+
+/* MODAL STYLING */
+.optional-text{
+  float:right;
+  color : #3FA5FA;
+  margin-top: -1.8rem;
 }
