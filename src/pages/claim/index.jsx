@@ -1,14 +1,22 @@
-import React, { useState } from "react";
 import { Typography } from "antd";
-import DataTable from "../../components/data-table";
-import Sidebar from "../../components/sidebar";
-import InputModal from "../../components/input-modal";
-import UpdateModal from "../../components/update-modal";
+import axios from "axios";
+import DataTable from "components/data-table";
+import Sidebar from "components/sidebar";
+import UpdateModal from "components/update-modal";
+import VerificationModal from "components/verification-modal";
+import { Auth } from "modules/context";
+import React, { useContext, useEffect, useState } from "react";
+
 const { Title } = Typography;
 
 function Index(props) {
-  const [showInputModal, setShowInputModal] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [data, setData] = useState([])
+  const [category, setCategory] = useState([])
+  const [status, setStatus] = useState([])
+
+  const [user] = useContext(Auth);
 
   // -- table data start --
 
@@ -36,70 +44,57 @@ function Index(props) {
     },
   ]);
 
-  const data = [
-    {
-      id: "1",
-      name: "Tas Supreme",
-      date: "06 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Ditemukan",
-    },
-    {
-      id: "2",
-      name: "Dompet Montblanc",
-      date: "06 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "3",
-      name: "Ransel Exsport",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "4",
-      name: "Botol Tupperware",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Lain-lain",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "5",
-      name: "Macbook Pro",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Elektronik",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Ditemukan",
-    },
-  ];
+  function getData() {
+    let config = {
+      method: 'get',
+      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    };
+
+    axios(config)
+      .then((res) => {
+        setData(res.data.data)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function getCategory() {
+    let config = {
+      method: 'get',
+      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    };
+
+    axios(config)
+      .then((res) => {
+        setCategory(res.data.data)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function getStatus() {
+    let config = {
+      method: 'get',
+      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-status',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    };
+
+    axios(config)
+      .then((res) => {
+        setStatus(res.data.data)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getData()
+    getCategory()
+    getStatus()
+  }, [])
 
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
-  // -- input modal content start --
-
-  const showModal = (isShow) => {
-    setShowInputModal(isShow);
-  };
-
-  function submitForm() {
-    alert("form input submitted");
-  }
+  // -- table data end --
 
   // -- detail modal
 
@@ -111,6 +106,11 @@ function Index(props) {
     alert("form update submitted");
   }
 
+  // -- verification modal
+  const verificationModal = (isShow) => {
+    setShowVerificationModal(isShow);
+  };
+
   return (
     <div>
       <Sidebar
@@ -119,15 +119,15 @@ function Index(props) {
             <Title>Permintaan Klaim</Title>
             <DataTable
               dataWithIndex={dataWithIndex}
-              inputModal={() => setShowInputModal(true)}
+              category={category}
+              status={status}
               detailModal={detailModal}
+              verificationModal={verificationModal}
+              allowVerification={true}
             />
-            <InputModal
-              modalData={fileList}
-              visible={showInputModal}
-              visibleHandler={showModal}
-              fileListHandler={(value) => setFileList(value)}
-              submitForm={submitForm}
+            <VerificationModal
+              showVerificationModal={showVerificationModal}
+              setShowVerificationModal={verificationModal}
             />
             <UpdateModal
               modalData={fileList}
