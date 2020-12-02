@@ -1,17 +1,16 @@
-import React, { useState } from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  Upload,
-  Typography,
-} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import DataTable from "../../components/data-table";
-import Sidebar from "../../components/sidebar";
+import {
+  Button,
+  DatePicker, Form,
+  Input, Modal,
+  Select,
+  Typography, Upload
+} from "antd";
+import axios from "axios";
+import DataTable from "components/data-table";
+import Sidebar from "components/sidebar";
+import { Auth } from "modules/context";
+import React, { useContext, useEffect, useState } from "react";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -32,6 +31,11 @@ function Index(props) {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImg, setPreviewImg] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
+  const [data, setData] = useState([])
+  const [category, setCategory] = useState([])
+  const [status, setStatus] = useState([])
+
+  const [user] = useContext(Auth);
 
   // -- table data start --
   const [fileList, setFileList] = useState([
@@ -58,62 +62,58 @@ function Index(props) {
     },
   ]);
 
-  const data = [
-    {
-      id: "1",
-      name: "Tas Supreme",
-      date: "06 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Ditemukan",
-    },
-    {
-      id: "2",
-      name: "Dompet Montblanc",
-      date: "06 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "3",
-      name: "Ransel Exsport",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "4",
-      name: "Botol Tupperware",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Lain-lain",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "5",
-      name: "Macbook Pro",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Elektronik",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Ditemukan",
-    },
-  ];
+  function getData() {
+    let config = {
+      method: 'get',
+      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    };
+
+    axios(config)
+      .then((res) => {
+        setData(res.data.data)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function getCategory() {
+    let config = {
+      method: 'get',
+      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    };
+
+    axios(config)
+      .then((res) => {
+        setCategory(res.data.data)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function getStatus() {
+    let config = {
+      method: 'get',
+      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-status',
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    };
+
+    axios(config)
+      .then((res) => {
+        setStatus(res.data.data)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getData()
+    getCategory()
+    getStatus()
+  }, [])
 
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
+
 
   // -- input modal content start --
 
@@ -138,7 +138,7 @@ function Index(props) {
   const uploadButton = (
     <div>
       <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={ { marginTop: 8 } }>Upload</div>
     </div>
   );
 
@@ -153,35 +153,57 @@ function Index(props) {
   const detailModal = (isShow) => {
     setShowDetailModal(isShow);
   };
+
   return (
     <div>
       <Sidebar
         content={
           <div>
             <Title>Barang Hilang</Title>
-            <DataTable dataWithIndex={dataWithIndex} inputModal={inputModal} detailModal={detailModal} />
-
-            {/* INPUT MODAL */}
-            <Modal
+            <DataTable
+              dataWithIndex={ dataWithIndex }
+              category={category}
+              status={status}
+              inputModal={ inputModal }
+              detailModal={ detailModal }
+              enableInput={true}
+            />
+            {/* <InputModal
+              modalData={fileList}
               visible={showInputModal}
+              visibleHandler={showModal}
+              fileListHandler={(value) => setFileList(value)}
+              submitForm={submitForm}
+            />
+            <UpdateModal
+              modalData={fileList}
+              visible={showDetailModal}
+              visibleHandler={detailModal}
+              fileListHandler={(value) => setFileList(value)}
+              submitUpdateForm={submitUpdateForm}
+            /> */}
+
+            {/* INPUT MODAL */ }
+            <Modal
+              visible={ showInputModal }
               title="Input Data Barang"
-              style={{ top: 20 }}
-              onCancel={() => setShowInputModal(false)}
-              footer={[
-                <Button key="back" onClick={() => setShowInputModal(false)}>
+              style={ { top: 20 } }
+              onCancel={ () => setShowInputModal(false) }
+              footer={ [
+                <Button key="back" onClick={ () => setShowInputModal(false) }>
                   Cancel
                 </Button>,
                 <Button
                   key="submit"
                   type="primary"
                   loading=""
-                  onClick={submitForm}
+                  onClick={ submitForm }
                 >
                   Submit
                 </Button>,
-              ]}
+              ] }
             >
-              <Form form={form} layout="vertical">
+              <Form form={ form } layout="vertical">
                 <Form.Item label="Nama Barang">
                   <Input placeholder="Nama Barang" />
                 </Form.Item>
@@ -189,7 +211,7 @@ function Index(props) {
                   <DatePicker
                     size="default"
                     placeholder="Tanggal Kehilangan"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   />
                 </Form.Item>
 
@@ -197,7 +219,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Lokasi Kehilangan"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   >
                     <Option value="bag-wallet">Stasiun A</Option>
                     <Option value="other">Stasiun B</Option>
@@ -208,7 +230,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Kategori Barang"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   >
                     <Option value="bag-wallet">Kategori A</Option>
                     <Option value="other">Kategori B</Option>
@@ -219,7 +241,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Stasus"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   >
                     <Option value="bag-wallet">Status A</Option>
                     <Option value="other">Status B</Option>
@@ -234,49 +256,49 @@ function Index(props) {
                   <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     listType="picture-card"
-                    fileList={fileList}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
+                    fileList={ fileList }
+                    onPreview={ handlePreview }
+                    onChange={ handleChange }
                   >
-                    {fileList.length >= 8 ? null : uploadButton}
+                    { fileList.length >= 8 ? null : uploadButton }
                   </Upload>
                   <Modal
-                    visible={previewVisible}
-                    title={previewTitle}
-                    footer={null}
-                    onCancel={() => setPreviewVisible(false)}
+                    visible={ previewVisible }
+                    title={ previewTitle }
+                    footer={ null }
+                    onCancel={ () => setPreviewVisible(false) }
                   >
                     <img
                       alt="example"
-                      style={{ width: "100%" }}
-                      src={previewImg}
+                      style={ { width: "100%" } }
+                      src={ previewImg }
                     />
                   </Modal>
                 </Form.Item>
               </Form>
             </Modal>
 
-            {/* DETAIL/UPDATE MODAL */}
+            {/* DETAIL/UPDATE MODAL */ }
             <Modal
-              visible={showDetailModal}
+              visible={ showDetailModal }
               title="Detail Data Barang"
-              style={{ top: 20 }}
-              onCancel={() => setShowDetailModal(false)}
-              footer={[
-                <Button key="back" onClick={() => setShowDetailModal(false)}>
+              style={ { top: 20 } }
+              onCancel={ () => setShowDetailModal(false) }
+              footer={ [
+                <Button key="back" onClick={ () => setShowDetailModal(false) }>
                   Cancel
                 </Button>,
                 <Button
                   key="submit"
                   type="primary"
                   loading=""
-                  onClick={submitForm}
+                  onClick={ submitForm }
                 >
                   Submit
                 </Button>,
-              ]}
+              ] }
             >
-              <Form form={form} layout="vertical">
+              <Form form={ form } layout="vertical">
                 <Form.Item label="Nama Barang">
                   <Input placeholder="Nama Barang" />
                 </Form.Item>
@@ -284,7 +306,7 @@ function Index(props) {
                   <DatePicker
                     size="default"
                     placeholder="Tanggal Kehilangan"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   />
                 </Form.Item>
 
@@ -292,7 +314,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Lokasi Kehilangan"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   >
                     <Option value="bag-wallet">Stasiun A</Option>
                     <Option value="other">Stasiun B</Option>
@@ -303,7 +325,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Kategori Barang"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   >
                     <Option value="bag-wallet">Kategori A</Option>
                     <Option value="other">Kategori B</Option>
@@ -314,7 +336,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Stasus"
-                    style={{ width: "100%" }}
+                    style={ { width: "100%" } }
                   >
                     <Option value="bag-wallet">Status A</Option>
                     <Option value="other">Status B</Option>
@@ -329,22 +351,22 @@ function Index(props) {
                   <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     listType="picture-card"
-                    fileList={fileList}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
+                    fileList={ fileList }
+                    onPreview={ handlePreview }
+                    onChange={ handleChange }
                   >
-                    {fileList.length >= 8 ? null : uploadButton}
+                    { fileList.length >= 8 ? null : uploadButton }
                   </Upload>
                   <Modal
-                    visible={previewVisible}
-                    title={previewTitle}
-                    footer={null}
-                    onCancel={() => setPreviewVisible(false)}
+                    visible={ previewVisible }
+                    title={ previewTitle }
+                    footer={ null }
+                    onCancel={ () => setPreviewVisible(false) }
                   >
                     <img
                       alt="example"
-                      style={{ width: "100%" }}
-                      src={previewImg}
+                      style={ { width: "100%" } }
+                      src={ previewImg }
                     />
                   </Modal>
                 </Form.Item>

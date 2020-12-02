@@ -1,11 +1,8 @@
-import React from "react";
-import swal from "sweetalert";
-import deleteIcon from "../../assets/deleteIcon.png";
 import {
-  DeleteOutlined,
+  CheckCircleOutlined, DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -15,14 +12,17 @@ import {
   Select,
   Space,
   Table,
-  Typography,
+  Typography
 } from "antd";
+import React from "react";
+import swal from "sweetalert";
+import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
 const { Option } = Select;
 
 export default function Index(props) {
-  
+
   // -- table content start --
 
   // show particular photo from table
@@ -54,11 +54,22 @@ export default function Index(props) {
   };
 
   // action section of table
+
+  const verification = (
+    <Button type="text" icon={<CheckCircleOutlined />} onClick={() => props.verificationModal(true)}>
+        Verifikasi
+    </Button>
+  )
+
+  const detail = (
+    <Button type="text" icon={<FileSearchOutlined />} onClick={() => props.detailModal(true)}>
+        Detail
+    </Button>
+  )
+
   const content = (
     <Space direction="vertical">
-      <Button type="text" icon={<FileSearchOutlined />} onClick={() => props.detailModal(true)}>
-        Detail
-      </Button>
+      {props.allowVerification ? verification : detail }
       <Button type="text" icon={<DeleteOutlined />} onClick={deleteData}>
         Hapus
       </Button>
@@ -66,6 +77,16 @@ export default function Index(props) {
   );
 
   // table head
+  const parseStatus = _id => {
+    let res = props.status.find(item => item.id === _id)
+    return res?.nama
+  }
+
+  const parseCategory = _id => {
+    let res = props.category.find(item => item.id === _id)
+    return res?.nama
+  }
+
   const columns = [
     {
       title: "No",
@@ -74,23 +95,28 @@ export default function Index(props) {
     },
     {
       title: "Nama barang",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "nama_barang",
+      key: "nama_barang",
     },
     {
       title: "Tanggal kehilangan",
-      dataIndex: "date",
-      key: "date",
+      dataIndex: "tanggal",
+      key: "tanggal",
     },
     {
       title: "Lokasi kehilangan",
-      dataIndex: "location",
-      key: "location",
+      dataIndex: "lokasi",
+      key: "lokasi",
     },
     {
       title: "Kategori",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "kategori_id",
+      key: "kategori_id",
+      render: (text) => (
+        <Text>
+          {parseCategory(text)}
+        </Text>
+      ),
     },
     {
       title: "Foto",
@@ -108,13 +134,21 @@ export default function Index(props) {
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "status_id",
+      key: "status_id",
       render: (text) => (
         <Text
-          style={{ color: `${text === "Ditemukan" ? "#01AC13" : "#E24343"}` }}
+          style={{ color: (() => {
+            if (text === 1) {
+              return "#E24343";
+            } else if (text === 2) {
+              return "#01AC13";
+            } else {
+              return "#000"
+            }
+          })()}}
         >
-          {text}
+          {parseStatus(text)}
         </Text>
       ),
     },
@@ -149,20 +183,26 @@ export default function Index(props) {
           />
           <DatePicker size="large" placeholder="Pilih tanggal" />
           <Select size="large" placeholder="Kategori" style={{ width: 169 }}>
-            <Option value="bag-wallet">Tas & Dompet</Option>
-            <Option value="other">Lain-lain</Option>
-            <Option value="electronic">Elektronik</Option>
+            {
+              props.category.map(item => (
+                <Option value={item.id} key={item.id}>{item.nama}</Option>
+              ))
+            }
           </Select>
         </Space>
-        <Button
-          type="primary"
-          size="large"
-          onClick={() => {
-            props.inputModal(true);
-          }}
-        >
-          Input data
-        </Button>
+        {
+          props.enableInput && (
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => {
+                props.inputModal(true);
+              }}
+            >
+              Input data
+            </Button>
+          )
+        }
       </Space>
       <Table columns={columns} dataSource={props.dataWithIndex} />
     </div>
