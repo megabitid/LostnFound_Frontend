@@ -8,15 +8,18 @@ import {
   Button,
   DatePicker,
   Input,
+  notification,
   Popover,
   Select,
   Space,
   Table,
   Typography
 } from "antd";
-import React from "react";
+import React, { useContext } from "react";
+import { Auth } from "../../modules/context";
 import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
+import Axios from "axios";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -25,13 +28,15 @@ export default function Index(props) {
 
   // -- table content start --
 
+  const [user] = useContext(Auth);
+
   // show particular photo from table
   const showPhoto = () => {
     alert("Showing Photo");
   };
 
   // delete function of table
-  const deleteData = () => {
+  const deleteData = (value) => {
     swal({
       className: "alert-delete",
       icon: deleteIcon,
@@ -41,6 +46,7 @@ export default function Index(props) {
       buttons: {
         cancel: {
           text: "Batal",
+          value: false,
           visible: true,
           className: "cancel-button",
         },
@@ -50,31 +56,59 @@ export default function Index(props) {
           visible: true,
         },
       },
-    });
+    }).then((removeData) => {
+
+      if (removeData) {
+        let idBarang = value;
+        let config = {
+          method: 'delete',
+          url: `https://megabit-lostnfound.herokuapp.com/api/v2/barang/${idBarang}`,
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+          }
+        }
+        Axios(config)
+          .then((res) => {
+            notification["success"]({
+              message: "Berhasil menghapus data",
+              description: res.message
+            })
+            let config = {
+              method: 'get',
+              url: (() => {
+                if (props.lostPage) {
+                  return "https://megabit-lostnfound.herokuapp.com/api/v2/barang";
+                } else if (props.foundPage) {
+                  return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2"
+                }
+              })(),
+              headers: {
+                'Authorization': `Bearer ${user.token}`,
+              }
+            }
+            Axios(config)
+              .then((res) => {
+                let data = res.data.data;
+                props.setData(data)
+              }).catch((err) => {
+                console.log(err);
+
+              })
+          })
+          .catch((err) => {
+            notification["error"]({
+              message: "Gagal menghapus data",
+              description: err.message
+            })
+          })
+      } else {
+        return;
+      }
+    })
+
+
   };
 
-  // action section of table
-
-  const verification = (
-    <Button type="text" icon={<CheckCircleOutlined />} onClick={() => props.verificationModal(true)}>
-        Verifikasi
-    </Button>
-  )
-
-  const detail = (
-    <Button type="text" icon={<FileSearchOutlined />} onClick={() => props.detailModal(true)}>
-        Detail
-    </Button>
-  )
-
-  const content = (
-    <Space direction="vertical">
-      {props.allowVerification ? verification : detail }
-      <Button type="text" icon={<DeleteOutlined />} onClick={deleteData}>
-        Hapus
-      </Button>
-    </Space>
-  );
 
   // table head
   const parseStatus = _id => {
@@ -92,6 +126,7 @@ export default function Index(props) {
       title: "No",
       dataIndex: "no",
       key: "no",
+      render: (text, object, index) => index + 1
     },
     {
       title: "Nama barang",
@@ -138,15 +173,17 @@ export default function Index(props) {
       key: "status_id",
       render: (text) => (
         <Text
-          style={{ color: (() => {
-            if (text === 1) {
-              return "#E24343";
-            } else if (text === 2) {
-              return "#01AC13";
-            } else {
-              return "#000"
-            }
-          })()}}
+          style={{
+            color: (() => {
+              if (text === 1) {
+                return "#E24343";
+              } else if (text === 2) {
+                return "#01AC13";
+              } else {
+                return "#000"
+              }
+            })()
+          }}
         >
           {parseStatus(text)}
         </Text>
@@ -157,7 +194,22 @@ export default function Index(props) {
       dataIndex: "id",
       key: "id",
       render: (text, record) => (
-        <Popover content={content}>
+        <Popover content={(
+          <Space direction="vertical">
+            {props.allowVerification ?
+              <Button type="text" icon={<CheckCircleOutlined />} onClick={() => props.verificationModal(true)}>
+                Verifikasi
+              </Button>
+              :
+              <Button type="text" icon={<FileSearchOutlined />} onClick={() => props.detailModal(true)}>
+                Detail
+               </Button>
+            }
+            <Button type="text" icon={<DeleteOutlined />} onClick={() => deleteData(record.id)}>
+              Hapus
+        </Button>
+          </Space>
+        )}>
           <Button type="text" icon={<EllipsisOutlined />} />
         </Popover>
       ),
@@ -204,7 +256,7 @@ export default function Index(props) {
           )
         }
       </Space>
-      <Table columns={columns} dataSource={props.dataWithIndex} />
+      <Table columns={columns} dataSource={props.data} />
     </div>
   );
 }

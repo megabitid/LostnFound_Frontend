@@ -110,7 +110,6 @@ function Index(props) {
     getStatus()
   }, [])
 
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
 
@@ -138,7 +137,7 @@ function Index(props) {
   const uploadButton = (
     <div>
       <PlusOutlined />
-      <div style={ { marginTop: 8 } }>Upload</div>
+      <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
 
@@ -161,12 +160,14 @@ function Index(props) {
           <div>
             <Title>Barang Hilang</Title>
             <DataTable
-              dataWithIndex={ dataWithIndex }
+              data={data}
+              setData={setData}
               category={category}
               status={status}
-              inputModal={ inputModal }
-              detailModal={ detailModal }
+              inputModal={inputModal}
+              detailModal={detailModal}
               enableInput={true}
+              lostPage={true}
             />
             {/* <InputModal
               modalData={fileList}
@@ -183,27 +184,27 @@ function Index(props) {
               submitUpdateForm={submitUpdateForm}
             /> */}
 
-            {/* INPUT MODAL */ }
+            {/* INPUT MODAL */}
             <Modal
-              visible={ showInputModal }
+              visible={showInputModal}
               title="Input Data Barang"
-              style={ { top: 20 } }
-              onCancel={ () => setShowInputModal(false) }
-              footer={ [
-                <Button key="back" onClick={ () => setShowInputModal(false) }>
+              style={{ top: 20 }}
+              onCancel={() => setShowInputModal(false)}
+              footer={[
+                <Button key="back" onClick={() => setShowInputModal(false)}>
                   Cancel
                 </Button>,
                 <Button
                   key="submit"
                   type="primary"
                   loading=""
-                  onClick={ submitForm }
+                  onClick={submitForm}
                 >
                   Submit
                 </Button>,
-              ] }
+              ]}
             >
-              <Form form={ form } layout="vertical">
+              <Form form={form} layout="vertical">
                 <Form.Item label="Nama Barang">
                   <Input placeholder="Nama Barang" />
                 </Form.Item>
@@ -211,7 +212,7 @@ function Index(props) {
                   <DatePicker
                     size="default"
                     placeholder="Tanggal Kehilangan"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   />
                 </Form.Item>
 
@@ -219,7 +220,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Lokasi Kehilangan"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   >
                     <Option value="bag-wallet">Stasiun A</Option>
                     <Option value="other">Stasiun B</Option>
@@ -230,7 +231,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Kategori Barang"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   >
                     <Option value="bag-wallet">Kategori A</Option>
                     <Option value="other">Kategori B</Option>
@@ -241,7 +242,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Stasus"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   >
                     <Option value="bag-wallet">Status A</Option>
                     <Option value="other">Status B</Option>
@@ -256,49 +257,49 @@ function Index(props) {
                   <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     listType="picture-card"
-                    fileList={ fileList }
-                    onPreview={ handlePreview }
-                    onChange={ handleChange }
+                    fileList={fileList}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
                   >
-                    { fileList.length >= 8 ? null : uploadButton }
+                    {fileList.length >= 8 ? null : uploadButton}
                   </Upload>
                   <Modal
-                    visible={ previewVisible }
-                    title={ previewTitle }
-                    footer={ null }
-                    onCancel={ () => setPreviewVisible(false) }
+                    visible={previewVisible}
+                    title={previewTitle}
+                    footer={null}
+                    onCancel={() => setPreviewVisible(false)}
                   >
                     <img
                       alt="example"
-                      style={ { width: "100%" } }
-                      src={ previewImg }
+                      style={{ width: "100%" }}
+                      src={previewImg}
                     />
                   </Modal>
                 </Form.Item>
               </Form>
             </Modal>
 
-            {/* DETAIL/UPDATE MODAL */ }
+            {/* DETAIL/UPDATE MODAL */}
             <Modal
-              visible={ showDetailModal }
+              visible={showDetailModal}
               title="Detail Data Barang"
-              style={ { top: 20 } }
-              onCancel={ () => setShowDetailModal(false) }
-              footer={ [
-                <Button key="back" onClick={ () => setShowDetailModal(false) }>
+              style={{ top: 20 }}
+              onCancel={() => setShowDetailModal(false)}
+              footer={[
+                <Button key="back" onClick={() => setShowDetailModal(false)}>
                   Cancel
                 </Button>,
                 <Button
                   key="submit"
                   type="primary"
                   loading=""
-                  onClick={ submitForm }
+                  onClick={submitForm}
                 >
                   Submit
                 </Button>,
-              ] }
+              ]}
             >
-              <Form form={ form } layout="vertical">
+              <Form form={form} layout="vertical">
                 <Form.Item label="Nama Barang">
                   <Input placeholder="Nama Barang" />
                 </Form.Item>
@@ -306,7 +307,7 @@ function Index(props) {
                   <DatePicker
                     size="default"
                     placeholder="Tanggal Kehilangan"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   />
                 </Form.Item>
 
@@ -314,7 +315,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Lokasi Kehilangan"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   >
                     <Option value="bag-wallet">Stasiun A</Option>
                     <Option value="other">Stasiun B</Option>
@@ -325,7 +326,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Kategori Barang"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   >
                     <Option value="bag-wallet">Kategori A</Option>
                     <Option value="other">Kategori B</Option>
@@ -336,7 +337,7 @@ function Index(props) {
                   <Select
                     size="default"
                     placeholder="Stasus"
-                    style={ { width: "100%" } }
+                    style={{ width: "100%" }}
                   >
                     <Option value="bag-wallet">Status A</Option>
                     <Option value="other">Status B</Option>
@@ -351,22 +352,22 @@ function Index(props) {
                   <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     listType="picture-card"
-                    fileList={ fileList }
-                    onPreview={ handlePreview }
-                    onChange={ handleChange }
+                    fileList={fileList}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
                   >
-                    { fileList.length >= 8 ? null : uploadButton }
+                    {fileList.length >= 8 ? null : uploadButton}
                   </Upload>
                   <Modal
-                    visible={ previewVisible }
-                    title={ previewTitle }
-                    footer={ null }
-                    onCancel={ () => setPreviewVisible(false) }
+                    visible={previewVisible}
+                    title={previewTitle}
+                    footer={null}
+                    onCancel={() => setPreviewVisible(false)}
                   >
                     <img
                       alt="example"
-                      style={ { width: "100%" } }
-                      src={ previewImg }
+                      style={{ width: "100%" }}
+                      src={previewImg}
                     />
                   </Modal>
                 </Form.Item>
