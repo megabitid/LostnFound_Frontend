@@ -12,7 +12,6 @@ const { Text } = Typography;
 function Index(props) {
   const [user] = useContext(Auth);
 
-  console.log(user);
 
   async function logoutHandler() {
     const headers = {

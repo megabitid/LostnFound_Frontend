@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Modal, Button, Form, Input, DatePicker, Select, Upload } from "antd";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
+import { Modal, Button, Form, Input, DatePicker, Select, Upload } from "antd";
+import { Auth } from "modules/context";
 
 const { Option } = Select;
 
@@ -15,11 +17,64 @@ function getBase64(file) {
 
 function Index(props) {
   const [form] = Form.useForm();
+  const [category, setCategory] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [stasiun, setStasiun] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImg, setPreviewImg] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
+  const [user] = useContext(Auth);
+
+  useEffect(() => {
+    getCategory();
+    getStatus();
+    getStasiun();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function getCategory() {
+    let config = {
+      method: "get",
+      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori",
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        setCategory(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function getStatus() {
+    let config = {
+      method: "get",
+      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-status",
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        setStatus(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function getStasiun() {
+    let config = {
+      method: "get",
+      url: "https://megabit-lostnfound.herokuapp.com/api/v1/stasiun",
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        setStasiun(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }
 
   const handlePreview = async (file) => {
+    console.log(file);
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
@@ -31,7 +86,9 @@ function Index(props) {
     );
   };
 
-  const handleChange = ({ fileList }) => props.fileListHandler(fileList);
+  const handleChange = ({ images }) => {
+    props.imagesHandler(images);
+  };
 
   const uploadButton = (
     <div>
@@ -46,67 +103,58 @@ function Index(props) {
         visible={props.visible}
         title="Input Data Barang"
         style={{ top: 20 }}
+        footer={null}
         onCancel={() => props.visibleHandler(false)}
-        footer={[
-          <Button key="back" onClick={() => props.visibleHandler(false)}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading=""
-            onClick={props.submitForm}
-          >
-            Submit
-          </Button>,
-        ]}
       >
-        <Form form={form} layout="vertical">
-          <Form.Item label="Nama Barang">
+        <Form form={form} layout="vertical" onFinish={props.submitForm}>
+          <Form.Item label="Nama Barang" name={"nama_barang"}>
             <Input placeholder="Nama Barang" />
           </Form.Item>
-          <Form.Item label="Tanggal Kehilangan">
+
+          <Form.Item label="Tanggal Kehilangan" name={"tanggal"}>
             <DatePicker
               size="default"
               placeholder="Tanggal Kehilangan"
               style={{ width: "100%" }}
             />
           </Form.Item>
-
-          <Form.Item label="Lokasi Kehilangan">
+          <Form.Item label="Lokasi" name={"lokasi"}>
+            <Input placeholder="Lokasi" />
+          </Form.Item>
+          <Form.Item label="Stasiun" name={"stasiun_id"}>
             <Select
               size="default"
-              placeholder="Lokasi Kehilangan"
+              placeholder="Stasiun"
               style={{ width: "100%" }}
             >
-              <Option value="bag-wallet">Stasiun A</Option>
-              <Option value="other">Stasiun B</Option>
-              <Option value="electronic">Stasiun C</Option>
+              {stasiun.map((data) => (
+                <Option value={data.id}>{data.nama}</Option>
+              ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Kategori Barang">
+          <Form.Item label="Kategori Barang" name={"kategori_id"}>
             <Select
               size="default"
               placeholder="Kategori Barang"
               style={{ width: "100%" }}
             >
-              <Option value="bag-wallet">Kategori A</Option>
-              <Option value="other">Kategori B</Option>
-              <Option value="electronic">Kategori C</Option>
+              {category.map((data) => (
+                <Option value={data.id}>{data.nama}</Option>
+              ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Stasus">
+          <Form.Item label="Stasus" name="status_id">
             <Select
               size="default"
               placeholder="Stasus"
               style={{ width: "100%" }}
             >
-              <Option value="bag-wallet">Status A</Option>
-              <Option value="other">Status B</Option>
-              <Option value="electronic">Status C</Option>
+              {status.map((data) => (
+                <Option value={data.id}>{data.nama}</Option>
+              ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Deskripsi">
+          <Form.Item label="Deskripsi" name={"deskripsi"}>
             <Input.TextArea placeholder="Deskripsi" />
           </Form.Item>
           <span className="optional-text">*Optional</span>
@@ -114,7 +162,7 @@ function Index(props) {
             <Upload
               action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
               listType="picture-card"
-              fileList={props.modalData}
+              images={props.modalData}
               onPreview={handlePreview}
               onChange={handleChange}
             >
@@ -128,6 +176,22 @@ function Index(props) {
             >
               <img alt="example" style={{ width: "100%" }} src={previewImg} />
             </Modal>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="ml-1 float-right"
+            >
+              Submit
+            </Button>
+            <Button
+              htmlType="button"
+              onClick={() => props.visibleHandler(false)}
+              className="float-right"
+            >
+              Cancel
+            </Button>
           </Form.Item>
         </Form>
       </Modal>
