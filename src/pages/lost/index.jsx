@@ -114,6 +114,7 @@ function Index(props) {
               inputModal={showModal}
               detailModal={detailModal}
               enableInput={true}
+              lostPage={true}
             />
             <InputModal
               modalData={images}

@@ -91,8 +91,6 @@ function Index(props) {
     getStatus()
   }, [])
 
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
-
   // -- table data end --
 
   // -- detail modal
@@ -112,7 +110,8 @@ function Index(props) {
           <div>
             <Title>Barang Diklaim</Title>
             <DataTable
-              dataWithIndex={dataWithIndex}
+              data={data}
+              setData={setData}
               category={category}
               status={status}
               detailModal={detailModal}

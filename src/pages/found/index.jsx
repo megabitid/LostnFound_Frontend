@@ -55,6 +55,7 @@ function Index(props) {
             <DataTable
               dataWithIndex={dataWithIndex}
               detailModal={detailModal}
+              foundPage={true}
             />
             <UpdateModal
               modalData={images}
