@@ -12,7 +12,7 @@ function Index(props) {
 
   // -- table data start --
 
-  const [fileList, setFileList] = useState([
+  const [images, setImages] = useState([
     {
       uid: "-1",
       name: "image.png",
@@ -123,17 +123,17 @@ function Index(props) {
               detailModal={detailModal}
             />
             <InputModal
-              modalData={fileList}
+              modalData={images}
               visible={showInputModal}
               visibleHandler={showModal}
-              fileListHandler={(value) => setFileList(value)}
+              imagesHandler={(value) => setImages(value)}
               submitForm={submitForm}
             />
             <UpdateModal
-              modalData={fileList}
+              modalData={images}
               visible={showDetailModal}
               visibleHandler={detailModal}
-              fileListHandler={(value) => setFileList(value)}
+              imagesHandler={(value) => setImages(value)}
               submitUpdateForm={submitUpdateForm}
             />
           </div>

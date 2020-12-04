@@ -10,39 +10,18 @@ import React, { useContext, useEffect, useState } from "react";
 const { Title } = Typography;
 
 function Index(props) {
+  const [user] = useContext(Auth);
+  const [data, setData] = useState([])
+  const [images, setImages] = useState([]);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [data, setData] = useState([])
-  const [category, setCategory] = useState([])
-  const [status, setStatus] = useState([])
 
-  const [user] = useContext(Auth);
 
   // -- table data start --
 
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-2",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-3",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
+  useEffect(() => {
+    getData()
+  }, [])  // eslint-disable-line react-hooks/exhaustive-deps
 
   function getData() {
     let config = {
@@ -57,40 +36,6 @@ function Index(props) {
       })
       .catch((err) => console.log(err));
   }
-
-  function getCategory() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setCategory(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function getStatus() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-status',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setStatus(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
-  useEffect(() => {
-    getData()
-    getCategory()
-    getStatus()
-  }, [])
 
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
@@ -119,8 +64,6 @@ function Index(props) {
             <Title>Permintaan Klaim</Title>
             <DataTable
               dataWithIndex={dataWithIndex}
-              category={category}
-              status={status}
               detailModal={detailModal}
               verificationModal={verificationModal}
               allowVerification={true}
@@ -130,10 +73,10 @@ function Index(props) {
               setShowVerificationModal={verificationModal}
             />
             <UpdateModal
-              modalData={fileList}
+              modalData={images}
               visible={showDetailModal}
               visibleHandler={detailModal}
-              fileListHandler={(value) => setFileList(value)}
+              imagesHandler={(value) => setImages(value)}
               submitUpdateForm={submitUpdateForm}
             />
           </div>
