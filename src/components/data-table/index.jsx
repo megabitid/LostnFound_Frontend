@@ -65,7 +65,6 @@ export default function Index(props) {
 
   // -- table content start --
 
-
   // show particular photo from table
   const showPhoto = () => {
     alert("Showing Photo");
@@ -93,58 +92,54 @@ export default function Index(props) {
         },
       },
     }).then((removeData) => {
-
       if (removeData) {
         let idBarang = value;
         let config = {
-          method: 'delete',
+          method: "delete",
           url: `https://megabit-lostnfound.herokuapp.com/api/v2/barang/${idBarang}`,
           headers: {
-            'Authorization': `Bearer ${user.token}`,
-          }
-        }
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
         axios(config)
           .then((res) => {
             notification["success"]({
               message: "Berhasil menghapus data",
-              description: res.message
-            })
+              description: res.message,
+            });
             let config = {
-              method: 'get',
+              method: "get",
               url: (() => {
                 if (props.lostPage) {
                   return "https://megabit-lostnfound.herokuapp.com/api/v2/barang";
                 } else if (props.foundPage) {
-                  return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2"
+                  return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2";
                 }
               })(),
               headers: {
-                'Authorization': `Bearer ${user.token}`,
-              }
-            }
+                Authorization: `Bearer ${user.token}`,
+              },
+            };
             axios(config)
               .then((res) => {
                 let data = res.data.data;
-                props.setData(data)
-              }).catch((err) => {
-                console.log(err);
-
+                props.setData(data);
               })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .catch((err) => {
             notification["error"]({
               message: "Gagal menghapus data",
-              description: err.message
-            })
-          })
+              description: err.message,
+            });
+          });
       } else {
         return;
       }
-    })
-
-
+    });
   };
-
 
   // table head
   const parseStatus = (_id) => {
@@ -162,7 +157,7 @@ export default function Index(props) {
       title: "No",
       dataIndex: "no",
       key: "no",
-      render: (text, object, index) => index + 1
+      render: (text, object, index) => index + 1,
     },
     {
       title: "Nama barang",
@@ -212,9 +207,9 @@ export default function Index(props) {
               } else if (text === 2) {
                 return "#01AC13";
               } else {
-                return "#000"
+                return "#000";
               }
-            })()
+            })(),
           }}
         >
           {parseStatus(text)}
@@ -226,22 +221,36 @@ export default function Index(props) {
       dataIndex: "id",
       key: "id",
       render: (text, record) => (
-        <Popover content={(
-          <Space direction="vertical">
-            {props.allowVerification ?
-              <Button type="text" icon={<CheckCircleOutlined />} onClick={() => props.verificationModal(true)}>
-                Verifikasi
+        <Popover
+          content={
+            <Space direction="vertical">
+              {props.allowVerification ? (
+                <Button
+                  type="text"
+                  icon={<CheckCircleOutlined />}
+                  onClick={() => props.verificationModal(true)}
+                >
+                  Verifikasi
+                </Button>
+              ) : (
+                <Button
+                  type="text"
+                  icon={<FileSearchOutlined />}
+                  onClick={() => props.detailModal(true)}
+                >
+                  Detail
+                </Button>
+              )}
+              <Button
+                type="text"
+                icon={<DeleteOutlined />}
+                onClick={() => deleteData(record.id)}
+              >
+                Hapus
               </Button>
-              :
-              <Button type="text" icon={<FileSearchOutlined />} onClick={() => props.detailModal(true)}>
-                Detail
-               </Button>
-            }
-            <Button type="text" icon={<DeleteOutlined />} onClick={() => deleteData(record.id)}>
-              Hapus
-        </Button>
-          </Space>
-        )}>
+            </Space>
+          }
+        >
           <Button type="text" icon={<EllipsisOutlined />} />
         </Popover>
       ),
@@ -286,7 +295,7 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.data} />
+      <Table columns={columns} dataSource={props.dataWithIndex} />
     </div>
   );
 }

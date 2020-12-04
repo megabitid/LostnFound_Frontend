@@ -38,6 +38,7 @@ function Index(props) {
 
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
+  console.log(dataWithIndex)
   // -- table data end --
 
   // -- input modal content start --
