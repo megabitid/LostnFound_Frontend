@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import Logo from "../../assets/logo.png";
@@ -12,12 +12,17 @@ const { Text } = Typography;
 function Index(props) {
   const [user] = useContext(Auth);
 
+  useEffect(() => {
+    let expiredTokenTime = user.exp;
+    let newDate = Math.round(+new Date() / 1000);
+
+    if (expiredTokenTime <= newDate) {
+      localStorage.clear();
+      window.location.href = "/login";
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function logoutHandler() {
-    const headers = {
-      'Authorization': `Bearer ${user.token}`,
-    };
-
     swal({
       title: "LOG OUT",
       text: "Apakah anda yakin ingin Log Out dari aplikasi ini ?",
@@ -26,16 +31,17 @@ function Index(props) {
     }).then((removeData) => {
       if (removeData) {
         let config = {
-          method: 'get',
-          url : 'https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/logout',
+          method: "get",
+          url:
+            "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/logout",
           headers: {
-            'Authorization': `Bearer ${user.token}`,
-          }
-        }
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
         axios(config)
           .then((res) => {
-            localStorage.clear()
-            window.location.href = '/login'
+            localStorage.clear();
+            window.location.href = "/login";
           })
           .catch((err) => console.log(err));
       } else {

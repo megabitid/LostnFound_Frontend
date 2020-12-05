@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Auth } from "../../modules/context"
+import { Auth, API_URL } from "../../modules/context"
 import { Redirect } from "react-router-dom"
 import { Col, Card, Form, Input, Button, notification } from "antd"
 import Logo from "../../assets/logo.png";
@@ -17,7 +17,7 @@ function Index() {
       setLoading(true);
 
       let res = await Axios.post(
-        "https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/login",
+        `${API_URL}/web/auth/login`,
         { nip: value.nip, password: value.password }
       )
 

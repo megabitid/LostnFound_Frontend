@@ -13,45 +13,53 @@
   cursor: pointer;
 }
 
-.logout-style:hover{
-  color: #608AC4;
+.logout-style:hover {
+  color: #608ac4;
 }
 
 /* Alert Delete Styling */
 
-.alert-delete{
+.alert-delete {
   width: 260px;
 }
 
-.alert-delete .swal-icon{
+.alert-delete .swal-icon {
   margin-bottom: 10px;
 }
-.alert-delete .swal-title{
+.alert-delete .swal-title {
   font-size: 16px;
   color: #000;
 }
 .alert-delete .swal-text {
   text-align: center;
   font-size: 14px;
-  color: #8A8A8A;
+  color: #8a8a8a;
 }
 
-.alert-delete .swal-footer{
+.alert-delete .swal-footer {
   text-align: center;
 }
 
-.alert-delete .swal-button{
-width: 100px;
+.alert-delete .swal-button {
+  width: 100px;
 }
 
-.alert-delete .cancel-button{
+.alert-delete .cancel-button {
   background-color: #fff;
   border: 1px solid #dadadc;
 }
 
 /* MODAL STYLING */
-.optional-text{
+.optional-text {
   position: absolute;
   right: 2rem;
-  color : #3FA5FA;
+  color: #3fa5fa;
+}
+
+.ant-menu .ant-menu-light .ant-menu-root .ant-menu-inline{
+  height: 0 !important;
+}
+/* OVERLAY */
+.ant-spin-nested-loading > div > .ant-spin{
+  top: 25% !important;
 }

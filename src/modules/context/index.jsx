@@ -1,7 +1,7 @@
 import React, { useState, createContext, useEffect } from "react";
 
 export const Auth = createContext();
-
+export const API_URL = "https://megabit-lostnfound.herokuapp.com/api/v2"
 export const AuthProvider = props => {
 
     const [user, setUser]         = useState(null);

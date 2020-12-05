@@ -89,7 +89,7 @@ function Index(props) {
     getData()
     getCategory()
     getStatus()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // -- table data end --
 

@@ -78,22 +78,12 @@ export default function Index(props) {
       title: "Hapus data dari tabel ?",
       text: "Setelah dihapus, data tersebut tidak akan muncul di dalam tabel",
       dangerMode: true,
-      buttons: {
-        cancel: {
-          text: "Batal",
-          value: false,
-          visible: true,
-          className: "cancel-button",
-        },
-        confirm: {
-          text: "Hapus",
-          value: true,
-          visible: true,
-        },
-      },
+      buttons: ["Batal", "Hapus"],
     }).then((removeData) => {
       if (removeData) {
         let idBarang = value;
+        props.loadingHandler(true);
+
         let config = {
           method: "delete",
           url: `https://megabit-lostnfound.herokuapp.com/api/v2/barang/${idBarang}`,
@@ -101,25 +91,30 @@ export default function Index(props) {
             Authorization: `Bearer ${user.token}`,
           },
         };
+
         axios(config)
           .then((res) => {
             notification["success"]({
               message: "Berhasil menghapus data",
               description: res.message,
             });
+
             let config = {
               method: "get",
               url: (() => {
                 if (props.lostPage) {
-                  return "https://megabit-lostnfound.herokuapp.com/api/v2/barang";
+                  props.getData();
+                  // return "https://megabit-lostnfound.herokuapp.com/api/v2/barang";
                 } else if (props.foundPage) {
-                  return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2";
+                  props.getData();
+                  // return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2";
                 }
               })(),
               headers: {
                 Authorization: `Bearer ${user.token}`,
               },
             };
+
             axios(config)
               .then((res) => {
                 let data = res.data.data;
@@ -236,7 +231,7 @@ export default function Index(props) {
                 <Button
                   type="text"
                   icon={<FileSearchOutlined />}
-                  onClick={() => props.detailModal(true)}
+                  onClick={() => props.detailModal(true, record.id)}
                 >
                   Detail
                 </Button>
