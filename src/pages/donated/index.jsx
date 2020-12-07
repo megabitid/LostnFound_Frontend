@@ -4,7 +4,7 @@ import DataTable from "components/data-table";
 import InputModal from "components/input-modal";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
-import { Auth } from "modules/context";
+import { API_URL, Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 
 const { Title } = Typography;
@@ -49,12 +49,12 @@ function Index(props) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // -- API Call --
-  function getData() {
+  function getData(filter = "") {
     setTableLoading(true)
 
     let config = {
       method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=3",
+      url: `${API_URL}/barang?status_id=3${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -98,6 +98,7 @@ function Index(props) {
               inputModal={() => setShowInputModal(true)}
               detailModal={detailModal}
               isLoading={tableLoading}
+              getData={getData}
             />
             <InputModal
               modalData={images}
