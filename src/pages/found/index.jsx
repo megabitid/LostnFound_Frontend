@@ -4,7 +4,7 @@ import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
 import { API_URL, Auth } from "modules/context";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
 
@@ -16,11 +16,6 @@ function Index(props) {
   const [tableLoading, setTableLoading] = useState(false)
 
   // -- table data start --
-
-  // -- Effect --
-  useEffect(() => {
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // -- API Call --
   function getData(filter = "") {

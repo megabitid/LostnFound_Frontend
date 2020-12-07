@@ -5,7 +5,7 @@ import InputModal from "components/input-modal";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
 import { API_URL, Auth } from "modules/context";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import swal from "sweetalert";
 const { Title } = Typography;
 
@@ -22,10 +22,6 @@ function Index(props) {
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   // -- table data start --
-
-  useEffect(() => {
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function getData(filter = "") {
     setIsLoading(true);
@@ -175,7 +171,7 @@ function Index(props) {
 
   return (
     <div>
-      <button onClick={() => testFilter("&kategori_id=1")}>Click</button>
+      <button onClick={() => testFilter("&kategori_id=1&search=Sahabat")}>Click</button>
       <Spin tip="Loading..." spinning={isLoading}>
         <Sidebar
           content={
