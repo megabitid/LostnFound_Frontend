@@ -7,7 +7,7 @@ import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
 
-function index(props) {
+export default function Index(props) {
 
   const [users, setUsers] = useState([]);
   const [tableLoading, setTableLoading] = useState(false)
@@ -50,5 +50,3 @@ function index(props) {
     </div>
   );
 }
-
-export default index;
