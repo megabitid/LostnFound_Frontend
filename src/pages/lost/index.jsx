@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
-import { Typography, Spin } from "antd";
+import { Spin, Typography } from "antd";
 import axios from "axios";
-import { Auth, API_URL } from "modules/context";
-import Sidebar from "components/sidebar";
 import DataTable from "components/data-table";
 import InputModal from "components/input-modal";
+import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import swal from "sweetalert";
 const { Title } = Typography;
 
@@ -38,9 +38,9 @@ function Index(props) {
     axios(config)
       .then((res) => {
         setData(res.data.data);
-        setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false))
   }
 
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
