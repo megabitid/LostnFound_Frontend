@@ -13,14 +13,19 @@ function Index(props) {
   const [data, setData] = useState([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [images, setImages] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false)
 
   // -- table data start --
 
+  // -- Effect --
   useEffect(() => {
     getData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // -- API Call --
   function getData() {
+    setTableLoading(true)
+
     let config = {
       method: "get",
       url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2",
@@ -31,13 +36,15 @@ function Index(props) {
       .then((res) => {
         setData(res.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
   }
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
+
+
   // -- input modal content start --
 
   // -- detail modal
-
   const detailModal = (isShow) => {
     setShowDetailModal(isShow);
   };
@@ -56,6 +63,7 @@ function Index(props) {
               dataWithIndex={dataWithIndex}
               detailModal={detailModal}
               foundPage={true}
+              isLoading={tableLoading}
             />
             <UpdateModal
               modalData={images}
