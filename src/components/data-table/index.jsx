@@ -326,7 +326,7 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.dataWithIndex} loading={props.isLoading}/>
+      <Table columns={columns} dataSource={props.data} loading={props.isLoading}/>
     </div>
   );
 }

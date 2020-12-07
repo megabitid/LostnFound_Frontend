@@ -4,8 +4,8 @@ import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
 import VerificationModal from "components/verification-modal";
-import { Auth } from "modules/context";
-import React, { useContext, useEffect, useState } from "react";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
 
@@ -15,29 +15,27 @@ function Index(props) {
   const [images, setImages] = useState([]);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false)
 
 
   // -- table data start --
 
-  useEffect(() => {
-    getData()
-  }, [])  // eslint-disable-line react-hooks/exhaustive-deps
+  function getData(filter = "") {
+    setTableLoading(true)
 
-  function getData() {
     let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang',
-      headers: { 'Authorization': `Bearer ${user.token}` }
+      method: "get",
+      url: `${API_URL}/barang?status_id=2${filter}`,
+      headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
-        setData(res.data.data)
+        setData(res.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
   }
-
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
 
@@ -63,10 +61,12 @@ function Index(props) {
           <div>
             <Title>Permintaan Klaim</Title>
             <DataTable
-              dataWithIndex={dataWithIndex}
+              data={data}
               detailModal={detailModal}
               verificationModal={verificationModal}
               allowVerification={true}
+              isLoading={tableLoading}
+              getData={getData}
             />
             <VerificationModal
               showVerificationModal={showVerificationModal}

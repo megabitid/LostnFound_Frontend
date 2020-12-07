@@ -58,7 +58,6 @@ function Index(props) {
       .catch((err) => console.log(err))
       .finally(() => setTableLoading(false))
   }
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
 
@@ -80,7 +79,7 @@ function Index(props) {
             <Title>Barang Diklaim</Title>
             <DataTable
               detailModal={detailModal}
-              dataWithIndex={dataWithIndex}
+              data={data}
               isLoading={tableLoading}
               getData={getData}
             />

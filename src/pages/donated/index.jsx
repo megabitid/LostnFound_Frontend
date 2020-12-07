@@ -60,7 +60,6 @@ function Index(props) {
       .catch((err) => console.log(err))
       .finally(() => setTableLoading(false))
   }
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- input modal content start --
 
@@ -89,7 +88,7 @@ function Index(props) {
           <div>
             <Title>Barang Didonasikan</Title>
             <DataTable
-              dataWithIndex={dataWithIndex}
+              data={data}
               inputModal={() => setShowInputModal(true)}
               detailModal={detailModal}
               isLoading={tableLoading}
