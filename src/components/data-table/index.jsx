@@ -204,6 +204,8 @@ export default function Index(props) {
                 return "#E24343";
               } else if (text === 2) {
                 return "#01AC13";
+              } else if (text === 4) {
+                return "#1B68B1"
               } else {
                 return "#000";
               }
