@@ -28,6 +28,7 @@ const { Option } = Select;
 export default function Index(props) {
   const [category, setCategory] = useState([]);
   const [status, setStatus] = useState([]);
+  const [filter, setFilter] = useState({query: "", category: ""})
   const [user] = useContext(Auth);
 
   // -- Effect --
@@ -35,6 +36,10 @@ export default function Index(props) {
     getCategory();
     getStatus();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    props.getData(`&kategori_id=${filter.category}&search=${filter.query}&`)
+  }, [filter])
 
   // -- API Call --
   function getCategory() {
@@ -70,7 +75,19 @@ export default function Index(props) {
 
   // Filter by category handler
   const handleFilterCategory = value => {
-      props.getData(`&kategori_id=${value}`)
+      // props.getData(`&kategori_id=${value}`)
+      setFilter(prevState => ({...prevState, category: value}))
+  }
+
+  const clearFilterCategory = () => {
+      // props.getData(`&kategori_id=${value}`)
+      setFilter(prevState => ({...prevState, category: ""}))
+  }
+
+  // Filter by user query
+  const handleFilterQuery = e => {
+    // props.getData(`&search=${e.target.value}`)
+    setFilter(prevState => ({...prevState, query: e.target.value}))
   }
 
   // show particular photo from table
@@ -274,10 +291,12 @@ export default function Index(props) {
         }}
       >
         <Space size="large">
-          <Input.Search
+          <Input
+            allowClear
             size="large"
             placeholder="Cari di tabel"
             prefix={<SearchOutlined />}
+            onChange={handleFilterQuery}
           />
           <DatePicker size="large" placeholder="Pilih tanggal" />
           <Select
@@ -285,7 +304,7 @@ export default function Index(props) {
             placeholder="Kategori"
             style={{ width: 169 }}
             onSelect={handleFilterCategory}
-            onClear={() => props.getData()}
+            onClear={clearFilterCategory}
             allowClear
           >
             {category.map((_category) => (
