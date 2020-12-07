@@ -11,13 +11,9 @@ const { Title } = Typography;
 function Index(props) {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [data, setData] = useState([])
-  const [category, setCategory] = useState([])
-  const [status, setStatus] = useState([])
+  const [tableLoading, setTableLoading] = useState(false)
 
   const [user] = useContext(Auth);
-
-
-  // -- table data start --
 
   const [images, setImages] = useState([
     {
@@ -43,53 +39,31 @@ function Index(props) {
     },
   ]);
 
-  function getData() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
+    // -- table data start --
 
-    axios(config)
-      .then((res) => {
-        setData(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function getCategory() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setCategory(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function getStatus() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-status',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setStatus(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
+  // -- Effect --
   useEffect(() => {
-    getData()
-    getCategory()
-    getStatus()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    getData();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // -- API Call --
+  function getData() {
+    setTableLoading(true)
+
+    let config = {
+      method: "get",
+      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=4",
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        setData(res.data.data);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
+  }
+  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
 
@@ -110,11 +84,10 @@ function Index(props) {
           <div>
             <Title>Barang Diklaim</Title>
             <DataTable
-              data={data}
-              setData={setData}
-              category={category}
-              status={status}
               detailModal={detailModal}
+              dataWithIndex={dataWithIndex}
+              isLoading={tableLoading}
+              getData={getData}
             />
             <UpdateModal
               modalData={images}
