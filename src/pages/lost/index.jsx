@@ -150,26 +150,8 @@ function Index(props) {
     console.log(body);
   }
 
-  const testFilter = (filter) => {
-    setIsLoading(true);
-    let config = {
-      method: "get",
-      url: `${API_URL}/barang?${filter}`,
-      headers: { Authorization: `Bearer ${user.token}` },
-    };
-
-    axios(config)
-      .then((res) => {
-        // setData(res.data.data);
-        console.log(res)
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false))
-  }
-
   return (
     <div>
-      <button onClick={() => testFilter("&kategori_id=1&search=Sahabat")}>Click</button>
       <Spin tip="Loading..." spinning={isLoading}>
         <Sidebar
           content={
