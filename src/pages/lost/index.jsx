@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
-import { Typography, Spin } from "antd";
+import { Spin, Typography } from "antd";
 import axios from "axios";
-import { Auth, API_URL } from "modules/context";
-import Sidebar from "components/sidebar";
 import DataTable from "components/data-table";
 import InputModal from "components/input-modal";
+import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useRef, useState } from "react";
 import swal from "sweetalert";
 const { Title } = Typography;
 
@@ -23,27 +23,21 @@ function Index(props) {
 
   // -- table data start --
 
-  useEffect(() => {
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function getData() {
+  function getData(filter = "") {
     setIsLoading(true);
     let config = {
       method: "get",
-      url: `${API_URL}/barang`,
+      url: `${API_URL}/barang?${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
         setData(res.data.data);
-        setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false))
   }
-
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
 
@@ -164,7 +158,7 @@ function Index(props) {
             <div>
               <Title>Barang Hilang</Title>
               <DataTable
-                dataWithIndex={dataWithIndex}
+                data={data}
                 inputModal={showModal}
                 detailModal={detailModal}
                 enableInput={true}

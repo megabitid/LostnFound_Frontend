@@ -3,8 +3,8 @@ import axios from "axios";
 import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
-import { Auth } from "modules/context";
-import React, { useContext, useEffect, useState } from "react";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
 
@@ -13,17 +13,17 @@ function Index(props) {
   const [data, setData] = useState([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [images, setImages] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false)
 
   // -- table data start --
 
-  useEffect(() => {
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // -- API Call --
+  function getData(filter = "") {
+    setTableLoading(true)
 
-  function getData() {
     let config = {
       method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2",
+      url: `${API_URL}/barang?status_id=2${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -31,13 +31,13 @@ function Index(props) {
       .then((res) => {
         setData(res.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
   }
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
+
   // -- input modal content start --
 
   // -- detail modal
-
   const detailModal = (isShow) => {
     setShowDetailModal(isShow);
   };
@@ -53,9 +53,11 @@ function Index(props) {
           <div>
             <Title>Barang Ditemukan</Title>
             <DataTable
-              dataWithIndex={dataWithIndex}
+              data={data}
               detailModal={detailModal}
               foundPage={true}
+              isLoading={tableLoading}
+              getData={getData}
             />
             <UpdateModal
               modalData={images}

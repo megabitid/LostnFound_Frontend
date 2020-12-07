@@ -3,21 +3,17 @@ import axios from "axios";
 import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
-import { Auth } from "modules/context";
-import React, { useContext, useEffect, useState } from "react";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
 
 function Index(props) {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [data, setData] = useState([])
-  const [category, setCategory] = useState([])
-  const [status, setStatus] = useState([])
+  const [tableLoading, setTableLoading] = useState(false)
 
   const [user] = useContext(Auth);
-
-
-  // -- table data start --
 
   const [images, setImages] = useState([
     {
@@ -43,53 +39,25 @@ function Index(props) {
     },
   ]);
 
-  function getData() {
+  // -- table data start --
+
+  // -- API Call --
+  function getData(filter = "") {
+    setTableLoading(true)
+
     let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang',
-      headers: { 'Authorization': `Bearer ${user.token}` }
+      method: "get",
+      url: `${API_URL}/barang?status_id=4${filter}`,
+      headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
-        setData(res.data.data)
+        setData(res.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
   }
-
-  function getCategory() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setCategory(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function getStatus() {
-    let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-status',
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setStatus(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
-  useEffect(() => {
-    getData()
-    getCategory()
-    getStatus()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // -- table data end --
 
@@ -110,11 +78,10 @@ function Index(props) {
           <div>
             <Title>Barang Diklaim</Title>
             <DataTable
-              data={data}
-              setData={setData}
-              category={category}
-              status={status}
               detailModal={detailModal}
+              data={data}
+              isLoading={tableLoading}
+              getData={getData}
             />
             <UpdateModal
               modalData={images}
