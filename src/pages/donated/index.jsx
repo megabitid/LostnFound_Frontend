@@ -1,18 +1,22 @@
-import React, { useState } from "react";
 import { Typography } from "antd";
-import DataTable from "../../components/data-table";
-import Sidebar from "../../components/sidebar";
-import InputModal from "../../components/input-modal";
-import UpdateModal from "../../components/update-modal";
+import axios from "axios";
+import DataTable from "components/data-table";
+import InputModal from "components/input-modal";
+import Sidebar from "components/sidebar";
+import UpdateModal from "components/update-modal";
+import { Auth } from "modules/context";
+import React, { useContext, useEffect, useState } from "react";
+
 const { Title } = Typography;
 
 function Index(props) {
+  const [user] = useContext(Auth);
+  const [data, setData] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-
-  // -- table data start --
-
+  const [tableLoading, setTableLoading] = useState(false)
   const [images, setImages] = useState([
+
     {
       uid: "-1",
       name: "image.png",
@@ -36,59 +40,31 @@ function Index(props) {
     },
   ]);
 
-  const data = [
-    {
-      id: "1",
-      name: "Tas Supreme",
-      date: "06 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Ditemukan",
-    },
-    {
-      id: "2",
-      name: "Dompet Montblanc",
-      date: "06 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "3",
-      name: "Ransel Exsport",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Tas & Dompet",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "4",
-      name: "Botol Tupperware",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Lain-lain",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Hilang",
-    },
-    {
-      id: "5",
-      name: "Macbook Pro",
-      date: "05 Nov 2020",
-      location: "Stasiun Gambir",
-      category: "Elektronik",
-      photo:
-        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-      status: "Ditemukan",
-    },
-  ];
 
+  // -- table data start --
+
+  // -- Effect --
+  useEffect(() => {
+    getData();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // -- API Call --
+  function getData() {
+    setTableLoading(true)
+
+    let config = {
+      method: "get",
+      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=3",
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        setData(res.data.data);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
+  }
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- input modal content start --
@@ -121,6 +97,7 @@ function Index(props) {
               dataWithIndex={dataWithIndex}
               inputModal={() => setShowInputModal(true)}
               detailModal={detailModal}
+              isLoading={tableLoading}
             />
             <InputModal
               modalData={images}
