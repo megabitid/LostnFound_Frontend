@@ -1,14 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import swal from "sweetalert";
-import axios from "axios";
-import deleteIcon from "../../assets/deleteIcon.png";
-import { Auth } from "modules/context";
 import {
   CheckCircleOutlined,
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -19,8 +14,13 @@ import {
   Select,
   Space,
   Table,
-  Typography,
+  Typography
 } from "antd";
+import axios from "axios";
+import { Auth } from "modules/context";
+import React, { useContext, useEffect, useState } from "react";
+import swal from "sweetalert";
+import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -30,11 +30,13 @@ export default function Index(props) {
   const [status, setStatus] = useState([]);
   const [user] = useContext(Auth);
 
+  // -- Effect --
   useEffect(() => {
     getCategory();
     getStatus();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // -- API Call --
   function getCategory() {
     let config = {
       method: "get",
@@ -62,6 +64,7 @@ export default function Index(props) {
       })
       .catch((err) => console.log(err));
   }
+
 
   // -- table content start --
 
@@ -290,7 +293,7 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.dataWithIndex} />
+      <Table columns={columns} dataSource={props.dataWithIndex} loading={props.isLoading}/>
     </div>
   );
 }
