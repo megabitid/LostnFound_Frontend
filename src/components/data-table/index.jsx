@@ -239,7 +239,7 @@ export default function Index(props) {
       ),
     },
     {
-      title: "Action",
+      title: "Aksi",
       dataIndex: "id",
       key: "id",
       render: (text, record) => (
