@@ -68,6 +68,11 @@ export default function Index(props) {
 
   // -- table content start --
 
+  // Filter by category handler
+  const handleFilterCategory = value => {
+      props.getData(`&kategori_id=${value}`)
+  }
+
   // show particular photo from table
   const showPhoto = () => {
     alert("Showing Photo");
@@ -269,16 +274,23 @@ export default function Index(props) {
         }}
       >
         <Space size="large">
-          <Input
+          <Input.Search
             size="large"
             placeholder="Cari di tabel"
             prefix={<SearchOutlined />}
           />
           <DatePicker size="large" placeholder="Pilih tanggal" />
-          <Select size="large" placeholder="Kategori" style={{ width: 169 }}>
-            {category.map((item) => (
-              <Option value={item.id} key={item.id}>
-                {item.nama}
+          <Select
+            size="large"
+            placeholder="Kategori"
+            style={{ width: 169 }}
+            onSelect={handleFilterCategory}
+            onClear={() => props.getData()}
+            allowClear
+          >
+            {category.map((_category) => (
+              <Option value={_category.id} key={_category.id}>
+                {_category.nama}
               </Option>
             ))}
           </Select>
