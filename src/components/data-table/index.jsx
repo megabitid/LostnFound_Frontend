@@ -17,7 +17,7 @@ import {
   Typography
 } from "antd";
 import axios from "axios";
-import { Auth } from "modules/context";
+import { API_URL, Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
@@ -45,7 +45,7 @@ export default function Index(props) {
   function getCategory() {
     let config = {
       method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori",
+      url: `${API_URL}/barang-kategori`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -59,7 +59,7 @@ export default function Index(props) {
   function getStatus() {
     let config = {
       method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-status",
+      url: `${API_URL}/barang-status`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -111,7 +111,7 @@ export default function Index(props) {
 
         let config = {
           method: "delete",
-          url: `https://megabit-lostnfound.herokuapp.com/api/v2/barang/${idBarang}`,
+          url: `${API_URL}/barang/${idBarang}`,
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
