@@ -1,10 +1,10 @@
 import { Typography } from "antd";
 import axios from "axios";
-import DataTable from "components/data-table";
+import ClaimTable from "components/claim-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
 import VerificationModal from "components/verification-modal";
-import { API_URL, Auth } from "modules/context";
+import { Auth } from "modules/context";
 import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
@@ -25,7 +25,8 @@ function Index(props) {
 
     let config = {
       method: "get",
-      url: `${API_URL}/barang?status_id=2${filter}`,
+      // not wokring with v2 API
+      url: `https://megabit-lostnfound.herokuapp.com/api/v1/claims?${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -60,11 +61,10 @@ function Index(props) {
         content={
           <div>
             <Title>Permintaan Klaim</Title>
-            <DataTable
+            <ClaimTable
               data={data}
               detailModal={detailModal}
               verificationModal={verificationModal}
-              allowVerification={true}
               isLoading={tableLoading}
               getData={getData}
             />
