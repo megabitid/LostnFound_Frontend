@@ -1,20 +1,20 @@
 import {
-   CheckCircleOutlined,
-   DeleteOutlined,
-   EllipsisOutlined,
+  CheckCircleOutlined,
+  DeleteOutlined,
+  EllipsisOutlined,
 
-   SearchOutlined
+  SearchOutlined
 } from "@ant-design/icons";
 import {
-   Button,
+  Button,
 
-   Input,
-   notification,
-   Popover,
-   Select,
-   Space,
-   Table,
-   Typography
+  Input,
+  notification,
+  Popover,
+  Select,
+  Space,
+  Table,
+  Typography
 } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import axios from "axios";
@@ -23,271 +23,249 @@ import React, { useContext, useEffect, useState } from "react";
 import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
 
- const { Text } = Typography;
- const { Option } = Select;
+const { Text } = Typography;
+const { Option } = Select;
 
- export default function Index(props) {
-   const [filter, setFilter] = useState({query: "", status: ""})
-   const [user] = useContext(Auth);
+export default function Index(props) {
+  const [filter, setFilter] = useState({ query: "", status: "" })
+  const [user] = useContext(Auth);
 
-   const [previewTitle, setPreviewTitle] = useState("");
-	const [previewVisible, setPreviewVisible] = useState(false);
-   const [imageUrl, setImageUrl] = useState("")
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [imageUrl, setImageUrl] = useState("")
 
-   // -- Effect --
-    useEffect(() => {
-     props.getData(`&verified=${filter.status}&search=${filter.query}&`)
-   }, [filter])
+  // -- Effect --
+  useEffect(() => {
+    props.getData(`&verified=${filter.status}&search=${filter.query}&`)
+  }, [filter])
 
-   // -- API Call --
-   function getItem(id) {
-     let config = {
-       method: "get",
-       url: `${API_URL}/barang/${id}`,
-       headers: { Authorization: `Bearer ${user.token}` },
-     };
+  // -- API Call --
+  function getItem(id) {
+    let config = {
+      method: "get",
+      url: `${API_URL}/barang/${id}`,
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
 
-     axios(config)
-       .then((res) => {
-         return res.data.nama_barang;
-       })
-       .catch((err) => console.log(err));
-   }
+    axios(config)
+      .then((res) => {
+        return res.data.nama_barang;
+      })
+      .catch((err) => console.log(err));
+  }
 
-   // -- table content start --
+  // -- table content start --
 
-   // Filter by status handler
-   const handleFilterStatus = value => {
-       // props.getData(`&kategori_id=${value}`
-       setFilter(prevState => ({...prevState, status: value}))
-   }
+  // Filter by status handler
+  const handleFilterStatus = value => {
+    // props.getData(`&kategori_id=${value}`
+    setFilter(prevState => ({ ...prevState, status: value }))
+  }
 
-   const clearFilterStatus = () => {
-       // props.getData(`&kategori_id=${value}`)
-       setFilter(prevState => ({...prevState, status: ""}))
-   }
+  const clearFilterStatus = () => {
+    // props.getData(`&kategori_id=${value}`)
+    setFilter(prevState => ({ ...prevState, status: "" }))
+  }
 
-   // Filter by user query
-   const handleFilterQuery = e => {
-     // props.getData(`&search=${e.target.value}`)
-     setFilter(prevState => ({...prevState, query: e.target.value}))
-   }
+  // Filter by user query
+  const handleFilterQuery = e => {
+    // props.getData(`&search=${e.target.value}`)
+    setFilter(prevState => ({ ...prevState, query: e.target.value }))
+  }
 
-   // show particular photo from table
-   const showPhoto = uri_tiket => {
-     setImageUrl(uri_tiket);
-     setPreviewTitle(uri_tiket.substring(uri_tiket.lastIndexOf("/") + 1));
-     setPreviewVisible(true)
-   };
+  // show particular photo from table
+  const showPhoto = uri_tiket => {
+    setImageUrl(uri_tiket);
+    setPreviewTitle(uri_tiket.substring(uri_tiket.lastIndexOf("/") + 1));
+    setPreviewVisible(true)
+  };
 
-   // delete function of table
-   const deleteData = (value) => {
-     swal({
-       className: "alert-delete",
-       icon: deleteIcon,
-       title: "Hapus data dari tabel ?",
-       text: "Setelah dihapus, data tersebut tidak akan muncul di dalam tabel",
-       dangerMode: true,
-       buttons: ["Batal", "Hapus"],
-     }).then((removeData) => {
-       if (removeData) {
-         let idBarang = value;
-         props.loadingHandler(true);
+  // delete function of table
+  const deleteData = (value) => {
+    swal({
+      className: "alert-delete",
+      icon: deleteIcon,
+      title: "Hapus data dari tabel ?",
+      text: "Setelah dihapus, data tersebut tidak akan muncul di dalam tabel",
+      dangerMode: true,
+      buttons: ["Batal", "Hapus"],
+    }).then((removeData) => {
+      if (removeData) {
+        let id = value;
+        console.log(id);
+        props.loadingHandler(true);
 
-         let config = {
-           method: "delete",
-           url: `${API_URL}/barang/${idBarang}`,
-           headers: {
-             Authorization: `Bearer ${user.token}`,
-           },
-         };
+        let config = {
+          method: "delete",
+          url: `https://megabit-lostnfound.herokuapp.com/api/v1/claims/${id}`,
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
 
-         axios(config)
-           .then((res) => {
-             notification["success"]({
-               message: "Berhasil menghapus data",
-               description: res.message,
-             });
+        axios(config)
+          .then((res) => {
+            notification["success"]({
+              message: "Berhasil menghapus data",
+              description: res.message,
+            });
+            props.getData();
+            props.loadingHandler(true);
+          })
+          .catch((err) => {
+            notification["error"]({
+              message: "Gagal menghapus data",
+              description: err.message,
+            });
+          });
+      } else {
+        return;
+      }
+    });
+  };
 
-             let config = {
-               method: "get",
-               url: (() => {
-                 if (props.lostPage) {
-                   props.getData();
-                   // return "https://megabit-lostnfound.herokuapp.com/api/v2/barang";
-                 } else if (props.foundPage) {
-                   props.getData();
-                   // return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2";
-                 }
-               })(),
-               headers: {
-                 Authorization: `Bearer ${user.token}`,
-               },
-             };
+  // table head
 
-             axios(config)
-               .then((res) => {
-                 let data = res.data.data;
-                 props.setData(data);
-               })
-               .catch((err) => {
-                 console.log(err);
-               });
-           })
-           .catch((err) => {
-             notification["error"]({
-               message: "Gagal menghapus data",
-               description: err.message,
-             });
-           });
-       } else {
-         return;
-       }
-     });
-   };
-
-   // table head
-
-   const columns = [
-     {
-       title: "No",
-       dataIndex: "no",
-       key: "no",
-       render: (text, object, index) => index + 1,
-     },
-     {
-       title: "Nama barang",
-       dataIndex: "barang_id",
-       key: "barang_id",
-       render: (text) => getItem(text)
-     },
-     {
-       title: "Nomor telepon",
-       dataIndex: "no_telp",
-       key: "no_telp",
-     },
-     {
-       title: "Alamat",
-       dataIndex: "alamat",
-       key: "alamat",
-     },
-     {
-       title: "Tiket",
-       dataIndex: "uri_tiket",
-       key: "uri_tiket",
-       render: (text) => (
-         <Button
-           type="link"
-           style={{ textDecoration: "underline" }}
-           onClick={() => showPhoto(text)}
-         >
-           Lihat Tiket
-         </Button>
-       ),
-     },
-     {
-       title: "Status",
-       dataIndex: "verified",
-       key: "verified",
-       render: (text) => (
-         <Text
-           style={{
-             color: (() => {
-               if (text) {
-                  return "#01AC13";
-               } else {
-                  return "#E24343";
-               }
-             })(),
-           }}
-         >
-           {text ? "Terverifikasi" : "Belum terverifikasi"}
-         </Text>
-       ),
-     },
-     {
-       title: "Aksi",
-       dataIndex: "id",
-       key: "id",
-       render: (text, record) => (
-         <Popover
-           content={
-             <Space direction="vertical">
-               <Button
-                   type="text"
-                   icon={<CheckCircleOutlined />}
-                   onClick={() => props.verificationModal(true)}
-                 >
-                   Verifikasi
+  const columns = [
+    {
+      title: "No",
+      dataIndex: "no",
+      key: "no",
+      render: (text, object, index) => index + 1,
+    },
+    {
+      title: "Nama barang",
+      dataIndex: "barang_id",
+      key: "barang_id",
+      render: (text) => getItem(text)
+    },
+    {
+      title: "Nomor telepon",
+      dataIndex: "no_telp",
+      key: "no_telp",
+    },
+    {
+      title: "Alamat",
+      dataIndex: "alamat",
+      key: "alamat",
+    },
+    {
+      title: "Tiket",
+      dataIndex: "uri_tiket",
+      key: "uri_tiket",
+      render: (text) => (
+        <Button
+          type="link"
+          style={{ textDecoration: "underline" }}
+          onClick={() => showPhoto(text)}
+        >
+          Lihat Tiket
+        </Button>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "verified",
+      key: "verified",
+      render: (text) => (
+        <Text
+          style={{
+            color: (() => {
+              if (text) {
+                return "#01AC13";
+              } else {
+                return "#E24343";
+              }
+            })(),
+          }}
+        >
+          {text ? "Terverifikasi" : "Belum terverifikasi"}
+        </Text>
+      ),
+    },
+    {
+      title: "Aksi",
+      dataIndex: "id",
+      key: "id",
+      render: (text, record) => (
+        <Popover
+          content={
+            <Space direction="vertical">
+              <Button
+                type="text"
+                icon={<CheckCircleOutlined />}
+                onClick={() => props.verificationModal(record)}
+              >
+                Verifikasi
                </Button>
-               <Button
-                 type="text"
-                 icon={<DeleteOutlined />}
-                 onClick={() => deleteData(record.id)}
-               >
-                 Hapus
+              <Button
+                type="text"
+                icon={<DeleteOutlined />}
+                onClick={() => deleteData(record.id)}
+              >
+                Hapus
                </Button>
-             </Space>
-           }
-         >
-           <Button type="text" icon={<EllipsisOutlined />} />
-         </Popover>
-       ),
-     },
-   ];
+            </Space>
+          }
+        >
+          <Button type="text" icon={<EllipsisOutlined />} />
+        </Popover>
+      ),
+    },
+  ];
 
-   // -- table content end --
+  // -- table content end --
 
-   return (
-     <div>
-        <Modal
-				visible={previewVisible}
-				title={previewTitle}
-				footer={null}
-				onCancel={() => setPreviewVisible(false)}
-			>
-				<img alt="user" style={{width: "100%"}} src={imageUrl} />
-			</Modal>
-       <Space
-         style={{
-           marginBottom: 16,
-           width: "100%",
-           justifyContent: "space-between",
-         }}
-       >
-         <Space size="large">
-           <Input
-             allowClear
-             size="large"
-             placeholder="Cari di tabel"
-             prefix={<SearchOutlined />}
-             onChange={handleFilterQuery}
-           />
-           <Select
-             size="large"
-             placeholder="Kategori"
-             style={{ width: 169 }}
-             onSelect={handleFilterStatus}
-             onClear={clearFilterStatus}
-             allowClear
-           >
-               <Option value={true} key={1}>Terverifikasi</Option>
-               <Option value={false} key={2}>Belum terverifikasi</Option>
-           </Select>
-         </Space>
-         {props.enableInput && (
-           <Button
-             type="primary"
-             size="large"
-             onClick={() => {
-               props.inputModal(true);
-             }}
-           >
-             Input data
-           </Button>
-         )}
-       </Space>
-       <Table columns={columns} dataSource={props.data} loading={props.isLoading}/>
-     </div>
-   );
- }
+  return (
+    <div>
+      <Modal
+        visible={previewVisible}
+        title={previewTitle}
+        footer={null}
+        onCancel={() => setPreviewVisible(false)}
+      >
+        <img alt="user" style={{ width: "100%" }} src={imageUrl} />
+      </Modal>
+      <Space
+        style={{
+          marginBottom: 16,
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <Space size="large">
+          <Input
+            allowClear
+            size="large"
+            placeholder="Cari di tabel"
+            prefix={<SearchOutlined />}
+            onChange={handleFilterQuery}
+          />
+          <Select
+            size="large"
+            placeholder="Kategori"
+            style={{ width: 169 }}
+            onSelect={handleFilterStatus}
+            onClear={clearFilterStatus}
+            allowClear
+          >
+            <Option value={true} key={1}>Terverifikasi</Option>
+            <Option value={false} key={2}>Belum terverifikasi</Option>
+          </Select>
+        </Space>
+        {props.enableInput && (
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => {
+              props.inputModal(true);
+            }}
+          >
+            Input data
+          </Button>
+        )}
+      </Space>
+      <Table columns={columns} dataSource={props.data} loading={props.isLoading} />
+    </div>
+  );
+}

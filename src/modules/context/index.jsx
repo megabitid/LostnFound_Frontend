@@ -4,22 +4,22 @@ export const Auth = createContext();
 export const API_URL = "https://megabit-lostnfound.herokuapp.com/api/v2"
 export const AuthProvider = props => {
 
-    const [user, setUser]         = useState(null);
+    const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(false);
 
-   useEffect(() => {
+    useEffect(() => {
 
-       setLoading(true);
+        setLoading(true);
 
-       const currentUser = JSON.parse(localStorage.getItem("user"));
+        const currentUser = JSON.parse(localStorage.getItem("user"));
 
-       const iniateUser  = currentUser || null;
+        const iniateUser = currentUser || null;
 
-       setUser(iniateUser);
+        setUser(iniateUser);
+        console.log(currentUser);
+        setLoading(false);
 
-       setLoading(false);
-
-   }, []);
+    }, []);
 
     return (
         <Auth.Provider value={[user, setUser]}>
