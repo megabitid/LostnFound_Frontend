@@ -151,44 +151,45 @@ function Index(props) {
 
   return (
     <div>
-        <Sidebar
-          content={
-            <div>
-              <Title>Barang Hilang</Title>
-              <DataTable
-                data={data}
-                inputModal={showModal}
-                detailModal={detailModal}
-                enableInput={true}
-                lostPage={true}
-                getData={getData}
-                isLoading={tableLoading}
-                loadingHandler={(value) => seTableLoading(value)}
-              />
-              <InputModal
-                modalData={images}
-                isLoading={isInputLoading}
-                loadingHandler={(value) => setIsInputLoading(value)}
-                visible={showInputModal}
-                visibleHandler={showModal}
-                imagesHandler={(value) => setImages(value)}
-                submitForm={submitForm}
-                ref={childRef}
-              />
-              <UpdateModal
-                id={detailID}
-                isLoading={isUpdateLoading}
-                loadingHandler={(value) => setIsUpdateLoading(value)}
-                modalData={images}
-                visible={showDetailModal}
-                visibleHandler={detailModal}
-                imagesHandler={(value) => setImages(value)}
-                submitUpdateForm={submitUpdateForm}
-                reloadData={getData}
-              />
-            </div>
-          }
-        />
+      <Sidebar
+        content={
+          <div>
+            <Title>Barang Hilang</Title>
+            <DataTable
+              data={data}
+              inputModal={showModal}
+              detailModal={detailModal}
+              enableInput={true}
+              lostPage={true}
+              getData={getData}
+              isLoading={tableLoading}
+              setIsLoading={seTableLoading}
+              loadingHandler={(value) => seTableLoading(value)}
+            />
+            <InputModal
+              modalData={images}
+              isLoading={isInputLoading}
+              loadingHandler={(value) => setIsInputLoading(value)}
+              visible={showInputModal}
+              visibleHandler={showModal}
+              imagesHandler={(value) => setImages(value)}
+              submitForm={submitForm}
+              ref={childRef}
+            />
+            <UpdateModal
+              id={detailID}
+              isLoading={isUpdateLoading}
+              loadingHandler={(value) => setIsUpdateLoading(value)}
+              modalData={images}
+              visible={showDetailModal}
+              visibleHandler={detailModal}
+              imagesHandler={(value) => setImages(value)}
+              submitUpdateForm={submitUpdateForm}
+              reloadData={getData}
+            />
+          </div>
+        }
+      />
     </div>
   );
 }

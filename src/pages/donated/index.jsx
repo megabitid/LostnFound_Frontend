@@ -92,6 +92,7 @@ function Index(props) {
               inputModal={() => setShowInputModal(true)}
               detailModal={detailModal}
               isLoading={tableLoading}
+              loadingHandler={(value) => setTableLoading(value)}
               getData={getData}
             />
             <InputModal
