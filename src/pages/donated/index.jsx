@@ -1,5 +1,6 @@
 import { Typography } from "antd";
 import axios from "axios";
+import swal from "sweetalert";
 import DataTable from "components/data-table";
 import InputModal from "components/input-modal";
 import Sidebar from "components/sidebar";
@@ -12,40 +13,18 @@ const { Title } = Typography;
 function Index(props) {
   const [user] = useContext(Auth);
   const [data, setData] = useState([]);
+  const [detailID, setDetailID] = useState(undefined);
   const [showInputModal, setShowInputModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [tableLoading, setTableLoading] = useState(false)
-  const [images, setImages] = useState([
-
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-2",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-3",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
-
+  const [tableLoading, setTableLoading] = useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [images, setImages] = useState([]);
 
   // -- table data start --
 
   // -- API Call --
   function getData(filter = "") {
-    setTableLoading(true)
+    setTableLoading(true);
 
     let config = {
       method: "get",
@@ -58,7 +37,7 @@ function Index(props) {
         setData(res.data.data);
       })
       .catch((err) => console.log(err))
-      .finally(() => setTableLoading(false))
+      .finally(() => setTableLoading(false));
   }
 
   // -- input modal content start --
@@ -73,12 +52,47 @@ function Index(props) {
 
   // -- detail modal
 
-  const detailModal = (isShow) => {
+  const detailModal = (isShow, id) => {
+    setDetailID(id);
     setShowDetailModal(isShow);
   };
 
-  function submitUpdateForm() {
-    alert("form update submitted");
+  function submitUpdateForm(datas) {
+    let body = datas;
+    delete body["id"];
+    delete body["warna"];
+    delete body["merek"];
+    delete body["lokasi"];
+    delete body["created_at"];
+    delete body["updated_at"];
+
+    let config = {
+      method: "put",
+      url: `${API_URL}/barang/${detailID}`,
+      headers: { Authorization: `Bearer ${user.token}` },
+      data: body,
+    };
+
+    console.log(config);
+    axios(config)
+      .then((res) => {
+        console.log(res);
+        swal({
+          title: "Sukses",
+          text: "Data Updated Successfully",
+          buttons: "OK",
+          icon: "success",
+        })
+          .then((removeData) => {
+            getData();
+            setIsUpdateLoading(false);
+            setShowDetailModal(false);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+    console.log(detailID);
+    console.log(body);
   }
 
   return (
@@ -103,11 +117,15 @@ function Index(props) {
               submitForm={submitForm}
             />
             <UpdateModal
+              id={detailID}
               modalData={images}
+              reloadData={getData}
               visible={showDetailModal}
               visibleHandler={detailModal}
-              imagesHandler={(value) => setImages(value)}
               submitUpdateForm={submitUpdateForm}
+              imagesHandler={(value) => setImages(value)}
+              isLoading={tableLoading}
+              loadingHandler={(value) => setTableLoading(value)}
             />
           </div>
         }
