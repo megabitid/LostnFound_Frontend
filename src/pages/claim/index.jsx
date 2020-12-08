@@ -66,6 +66,7 @@ function Index(props) {
               detailModal={detailModal}
               verificationModal={verificationModal}
               isLoading={tableLoading}
+              loadingHandler={(value) => setTableLoading(value)}
               getData={getData}
             />
             <VerificationModal

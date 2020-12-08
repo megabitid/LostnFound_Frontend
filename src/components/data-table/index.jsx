@@ -28,7 +28,7 @@ const { Option } = Select;
 export default function Index(props) {
   const [category, setCategory] = useState([]);
   const [status, setStatus] = useState([]);
-  const [filter, setFilter] = useState({query: "", category: ""})
+  const [filter, setFilter] = useState({ query: "", category: "" })
   const [user] = useContext(Auth);
 
   // -- Effect --
@@ -75,19 +75,19 @@ export default function Index(props) {
 
   // Filter by category handler
   const handleFilterCategory = value => {
-      // props.getData(`&kategori_id=${value}`
-      setFilter(prevState => ({...prevState, category: value}))
+    // props.getData(`&kategori_id=${value}`
+    setFilter(prevState => ({ ...prevState, category: value }))
   }
 
   const clearFilterCategory = () => {
-      // props.getData(`&kategori_id=${value}`)
-      setFilter(prevState => ({...prevState, category: ""}))
+    // props.getData(`&kategori_id=${value}`)
+    setFilter(prevState => ({ ...prevState, category: "" }))
   }
 
   // Filter by user query
   const handleFilterQuery = e => {
     // props.getData(`&search=${e.target.value}`)
-    setFilter(prevState => ({...prevState, query: e.target.value}))
+    setFilter(prevState => ({ ...prevState, query: e.target.value }))
   }
 
   // show particular photo from table
@@ -106,8 +106,8 @@ export default function Index(props) {
       buttons: ["Batal", "Hapus"],
     }).then((removeData) => {
       if (removeData) {
+        props.loadingHandler(true)
         let idBarang = value;
-        props.loadingHandler(true);
 
         let config = {
           method: "delete",
@@ -124,30 +124,9 @@ export default function Index(props) {
               description: res.message,
             });
 
-            let config = {
-              method: "get",
-              url: (() => {
-                if (props.lostPage) {
-                  props.getData();
-                  // return "https://megabit-lostnfound.herokuapp.com/api/v2/barang";
-                } else if (props.foundPage) {
-                  props.getData();
-                  // return "https://megabit-lostnfound.herokuapp.com/api/v1/barang?status_id=2";
-                }
-              })(),
-              headers: {
-                Authorization: `Bearer ${user.token}`,
-              },
-            };
+            props.getData();
+            props.loadingHandler(false)
 
-            axios(config)
-              .then((res) => {
-                let data = res.data.data;
-                props.setData(data);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
           })
           .catch((err) => {
             notification["error"]({
@@ -255,14 +234,14 @@ export default function Index(props) {
                   Verifikasi
                 </Button>
               ) : (
-                <Button
-                  type="text"
-                  icon={<FileSearchOutlined />}
-                  onClick={() => props.detailModal(true, record.id)}
-                >
-                  Detail
-                </Button>
-              )}
+                  <Button
+                    type="text"
+                    icon={<FileSearchOutlined />}
+                    onClick={() => props.detailModal(true, record.id)}
+                  >
+                    Detail
+                  </Button>
+                )}
               <Button
                 type="text"
                 icon={<DeleteOutlined />}
@@ -326,7 +305,7 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.data} loading={props.isLoading}/>
+      <Table columns={columns} dataSource={props.data} loading={props.isLoading} />
     </div>
   );
 }
