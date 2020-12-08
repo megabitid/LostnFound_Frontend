@@ -26,7 +26,7 @@ export default function Index(props) {
   const [filter, setFilter] = useState({ query: "", role: "" })
 	const [previewTitle, setPreviewTitle] = useState("");
 	const [previewVisible, setPreviewVisible] = useState(false);
-
+  const [imageUrl, setImageUrl] = useState("")
 
   // -- Effect --
   useEffect(() => {
@@ -55,6 +55,13 @@ export default function Index(props) {
     setFilter(prevState => ({ ...prevState, query: e.target.value }))
   }
 
+
+  // show particular photo from table
+  const showPhoto = image_url => {
+    setImageUrl(image_url);
+    setPreviewTitle(image_url.substring(image_url.lastIndexOf("/") + 1));
+    setPreviewVisible(true)
+  };
 
   // delete function of table
 
@@ -106,10 +113,7 @@ export default function Index(props) {
         <Button
           type="link"
           style={ { textDecoration: "underline" } }
-				  onClick={() => {
-            setPreviewVisible(true)
-            setPreviewTitle(text.substring(text.lastIndexOf("/") + 1));
-          }}
+				  onClick={() => showPhoto(text)}
         >
           Lihat Foto
         </Button>
@@ -156,7 +160,7 @@ export default function Index(props) {
 				footer={null}
 				onCancel={() => setPreviewVisible(false)}
 			>
-				<img alt="user" style={{width: "100%"}} src={props.data[0].image} />
+				<img alt="user" style={{width: "100%"}} src={imageUrl} />
 			</Modal>
       <Space
         style={ {
