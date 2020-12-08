@@ -148,6 +148,8 @@ export default function Index(props) {
 
   // -- table content end --
 
+  console.log(props.data)
+
   return (
     <div>
       <Modal
@@ -156,7 +158,7 @@ export default function Index(props) {
 				footer={null}
 				onCancel={() => setPreviewVisible(false)}
 			>
-				<img alt="user" style={{width: "100%"}} src={props.data[0].image} />
+				<img alt="user" style={{width: "100%"}} src={props.data[0] && props.data[0].image}/>
 			</Modal>
       <Space
         style={ {
