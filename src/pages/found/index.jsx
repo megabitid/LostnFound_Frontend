@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import { Typography, Spin } from "antd";
@@ -52,6 +52,7 @@ function Index(props) {
   };
 
   function submitUpdateForm(datas) {
+    setIsUpdateLoading(true)
     console.log('called')
     let body = datas;
     delete body["id"];

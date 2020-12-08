@@ -112,6 +112,7 @@ function Index(props) {
   };
 
   function submitUpdateForm(datas) {
+    setIsUpdateLoading(true)
     let body = datas;
     delete body["id"];
     delete body["warna"];
@@ -178,14 +179,14 @@ function Index(props) {
             />
             <UpdateModal
               id={detailID}
-              isLoading={isUpdateLoading}
-              loadingHandler={(value) => setIsUpdateLoading(value)}
               modalData={images}
-              visible={showDetailModal}
-              visibleHandler={detailModal}
-              imagesHandler={(value) => setImages(value)}
-              submitUpdateForm={submitUpdateForm}
               reloadData={getData}
+              visible={showDetailModal}
+              isLoading={isUpdateLoading}              
+              visibleHandler={detailModal}showDetailModal
+              imagesHandler={(value) => setImages(value)}
+              loadingHandler={(value) => setIsUpdateLoading(value)}
+              submitUpdateForm={submitUpdateForm}
             />
           </div>
         }

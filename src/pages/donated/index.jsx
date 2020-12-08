@@ -21,7 +21,6 @@ function Index(props) {
   const [images, setImages] = useState([]);
 
   // -- table data start --
-
   // -- API Call --
   function getData(filter = "") {
     setTableLoading(true);
@@ -58,6 +57,7 @@ function Index(props) {
   };
 
   function submitUpdateForm(datas) {
+    setIsUpdateLoading(true)
     let body = datas;
     delete body["id"];
     delete body["warna"];
@@ -85,7 +85,8 @@ function Index(props) {
         })
           .then((removeData) => {
             getData();
-            setIsUpdateLoading(false);
+            setTableLoading(false);
+            setIsUpdateLoading(false)
             setShowDetailModal(false);
           })
           .catch((err) => console.log(err));
@@ -124,8 +125,8 @@ function Index(props) {
               visibleHandler={detailModal}
               submitUpdateForm={submitUpdateForm}
               imagesHandler={(value) => setImages(value)}
-              isLoading={tableLoading}
-              loadingHandler={(value) => setTableLoading(value)}
+              isLoading={isUpdateLoading}
+              loadingHandler={(value) => setIsUpdateLoading(value)}
             />
           </div>
         }
