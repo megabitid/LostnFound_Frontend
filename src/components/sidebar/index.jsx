@@ -10,15 +10,35 @@ const { Content, Sider } = Layout;
 const { Text } = Typography;
 
 function Index(props) {
-  const [user] = useContext(Auth);
+  const [user, setUser] = useContext(Auth);
 
   useEffect(() => {
     let expiredTokenTime = user.exp;
+    let timeForUpdateToken = expiredTokenTime - 600;
     let newDate = Math.round(+new Date() / 1000);
 
     if (expiredTokenTime <= newDate) {
       localStorage.clear();
       window.location.href = "/login";
+    } else if (timeForUpdateToken <= newDate) {
+      let config = {
+        method: "get",
+        url: `https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/refresh`,
+        headers: { Authorization: `Bearer ${user.token}` },
+      };
+      axios(config)
+        .then((res) => {
+          setUser(user.token = res.data.token, user.exp = res.data.exp);
+          const currentUser = JSON.parse(localStorage.getItem("user"));
+          currentUser.token = res.data.token;
+          currentUser.exp = res.data.exp;
+          localStorage.setItem("user", JSON.stringify(currentUser))
+        })
+        .catch((err) => {
+          console.log(err)
+          localStorage.clear();
+          window.location.href = "/login";
+        });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
