@@ -1,21 +1,21 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { Typography, Spin } from "antd";
 import axios from "axios";
+import swal from "sweetalert";
+import { Typography, Spin } from "antd";
 import { Auth, API_URL } from "modules/context";
 import Sidebar from "components/sidebar";
 import DataTable from "components/data-table";
 import InputModal from "components/input-modal";
 import UpdateModal from "components/update-modal";
-import swal from "sweetalert";
 const { Title } = Typography;
 
 function Index(props) {
   const childRef = useRef();
   const [user] = useContext(Auth);
-  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [detailID, setDetailID] = useState(undefined);
   const [images, setImages] = useState([]);
+  const [detailID, setDetailID] = useState(undefined);
+  const [isLoading, setIsLoading] = useState(false);
   const [isInputLoading, setIsInputLoading] = useState(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [showInputModal, setShowInputModal] = useState(false);
@@ -40,7 +40,7 @@ function Index(props) {
         setData(res.data.data);
         setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => setIsLoading(false));
   }
 
   const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
@@ -113,7 +113,6 @@ function Index(props) {
   // -- detail modal start
 
   const detailModal = (isShow, id) => {
-    console.log(id);
     setDetailID(id);
     setShowDetailModal(isShow);
   };

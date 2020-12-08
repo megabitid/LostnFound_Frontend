@@ -3,7 +3,7 @@ import axios from "axios";
 import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
-import { Auth } from "modules/context";
+import { Auth, API_URL } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 
 const { Title } = Typography;
@@ -16,37 +16,10 @@ function Index(props) {
 
   const [user] = useContext(Auth);
 
-
-  // -- table data start --
-
-  const [images, setImages] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-2",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-3",
-      name: "image.png",
-      status: "done",
-      url:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
-
   function getData() {
     let config = {
       method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang',
+      url: `${API_URL}/barang`,
       headers: { 'Authorization': `Bearer ${user.token}` }
     };
 
@@ -116,13 +89,13 @@ function Index(props) {
               status={status}
               detailModal={detailModal}
             />
-            <UpdateModal
+            {/* <UpdateModal
               modalData={images}
               visible={showDetailModal}
               visibleHandler={detailModal}
               imagesHandler={(value) => setImages(value)}
               submitUpdateForm={submitUpdateForm}
-            />
+            /> */}
           </div>
         }
       />
