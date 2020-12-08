@@ -2,19 +2,9 @@ import {
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined
+  SearchOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-
-  Input,
-
-  Popover,
-  Select,
-  Space,
-  Table,
-  Typography
-} from "antd";
+import { Button, Input, Popover, Select, Space, Table, Typography } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 
@@ -22,49 +12,52 @@ const { Text } = Typography;
 const { Option } = Select;
 
 export default function Index(props) {
-
-  const [filter, setFilter] = useState({ query: "", role: "" })
-	const [previewTitle, setPreviewTitle] = useState("");
-	const [previewVisible, setPreviewVisible] = useState(false);
-
+  const [filter, setFilter] = useState({ query: "", role: "" });
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   // -- Effect --
   useEffect(() => {
-
     //  ----[ Filter is not working yet due to unavalaible API] ----
-    props.getData()
+    props.getData();
     // props.getData(`&kategori_id=${filter.role}&search=${filter.query}&`)
-  }, [filter])
+  }, [filter]);
 
   // -- table content start --
 
   // Filter by role handler
-  const handleFilterRole = value => {
+  const handleFilterRole = (value) => {
     // props.getData(`&kategori_id=${value}`)
-    setFilter(prevState => ({ ...prevState, role: value }))
-  }
+    setFilter((prevState) => ({ ...prevState, role: value }));
+  };
 
   const clearFilterRole = () => {
     // props.getData(`&kategori_id=${value}`)
-    setFilter(prevState => ({ ...prevState, role: "" }))
-  }
+    setFilter((prevState) => ({ ...prevState, role: "" }));
+  };
 
   // Filter by user query
-  const handleFilterQuery = e => {
+  const handleFilterQuery = (e) => {
     // props.getData(`&search=${e.target.value}`)
-    setFilter(prevState => ({ ...prevState, query: e.target.value }))
-  }
+    setFilter((prevState) => ({ ...prevState, query: e.target.value }));
+  };
 
+  // show particular photo from table
+  const showPhoto = (image_url) => {
+    setImageUrl(image_url);
+    setPreviewTitle(image_url.substring(image_url.lastIndexOf("/") + 1));
+    setPreviewVisible(true);
+  };
 
   // delete function of table
-
 
   // table head
   const parseRole = (_id) => {
     if (_id === 1) {
-      return "Admin"
+      return "Admin";
     } else if (_id === 2) {
-      return "Super admin"
+      return "Super admin";
     }
   };
 
@@ -90,13 +83,13 @@ export default function Index(props) {
       dataIndex: "lokasi",
       key: "lokasi",
       //  ----[ Lokasi tugas is not info is not avalaible from API] ----
-      render: () => <Text>Unavailable</Text>
+      render: () => <Text>Unavailable</Text>,
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (text) => <Text>{ parseRole(text) }</Text>,
+      render: (text) => <Text>{parseRole(text)}</Text>,
     },
     {
       title: "Foto",
@@ -105,11 +98,8 @@ export default function Index(props) {
       render: (text) => (
         <Button
           type="link"
-          style={ { textDecoration: "underline" } }
-				  onClick={() => {
-            setPreviewVisible(true)
-            setPreviewTitle(text.substring(text.lastIndexOf("/") + 1));
-          }}
+          style={{ textDecoration: "underline" }}
+          onClick={() => showPhoto(text)}
         >
           Lihat Foto
         </Button>
@@ -125,22 +115,22 @@ export default function Index(props) {
             <Space direction="vertical">
               <Button
                 type="text"
-                icon={ <FileSearchOutlined /> }
-                onClick={ () => props.detailModal(true, record.id) }
+                icon={<FileSearchOutlined />}
+                onClick={() => props.detailModal(true, record.id)}
               >
                 Detail
-                  </Button>
+              </Button>
               <Button
                 type="text"
-                icon={ <DeleteOutlined /> }
-              //  onClick={() => deleteData(record.id)}
+                icon={<DeleteOutlined />}
+                //  onClick={() => deleteData(record.id)}
               >
                 Hapus
-               </Button>
+              </Button>
             </Space>
           }
         >
-          <Button type="text" icon={ <EllipsisOutlined /> } />
+          <Button type="text" icon={<EllipsisOutlined />} />
         </Popover>
       ),
     },
@@ -148,56 +138,64 @@ export default function Index(props) {
 
   // -- table content end --
 
-  console.log(props.data)
+  console.log(props.data);
 
   return (
     <div>
       <Modal
-				visible={previewVisible}
-				title={previewTitle}
-				footer={null}
-				onCancel={() => setPreviewVisible(false)}
-			>
-				<img alt="user" style={{width: "100%"}} src={props.data[0] && props.data[0].image}/>
-			</Modal>
+        visible={previewVisible}
+        title={previewTitle}
+        footer={null}
+        onCancel={() => setPreviewVisible(false)}
+      >
+        <img alt="user" style={{ width: "100%" }} src={imageUrl} />
+      </Modal>
       <Space
-        style={ {
+        style={{
           marginBottom: 16,
           width: "100%",
           justifyContent: "space-between",
-        } }
+        }}
       >
         <Space size="large">
           <Input
             allowClear
             size="large"
             placeholder="Cari di tabel"
-            prefix={ <SearchOutlined /> }
-            onChange={ handleFilterQuery }
+            prefix={<SearchOutlined />}
+            onChange={handleFilterQuery}
           />
           <Select
             size="large"
             placeholder="Role"
-            style={ { width: 169 } }
-            onSelect={ handleFilterRole }
-            onClear={ clearFilterRole }
+            style={{ width: 169 }}
+            onSelect={handleFilterRole}
+            onClear={clearFilterRole}
             allowClear
           >
-            <Option value={ 1 } key={ 1 }>Admin</Option>
-            <Option value={ 2 } key={ 2 }>Super Admin</Option>
+            <Option value={1} key={1}>
+              Admin
+            </Option>
+            <Option value={2} key={2}>
+              Super Admin
+            </Option>
           </Select>
         </Space>
         <Button
           type="primary"
           size="large"
-          onClick={ () => {
+          onClick={() => {
             props.inputModal(true);
-          } }
+          }}
         >
           Input data
-          </Button>
+        </Button>
       </Space>
-      <Table columns={ columns } dataSource={ props.data } loading={ props.isLoading } />
+      <Table
+        columns={columns}
+        dataSource={props.data}
+        loading={props.isLoading}
+      />
     </div>
   );
 }
