@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useState, useRef } from "react";
 import axios from "axios";
 import swal from "sweetalert";
-import { Typography, Spin } from "antd";
+import { Typography } from "antd";
 import { Auth, API_URL } from "modules/context";
 import Sidebar from "components/sidebar";
 import DataTable from "components/data-table";
@@ -15,7 +15,7 @@ function Index(props) {
   const [data, setData] = useState([]);
   const [images, setImages] = useState([]);
   const [detailID, setDetailID] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+  const [tableLoading, seTableLoading] = useState(false);
   const [isInputLoading, setIsInputLoading] = useState(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [showInputModal, setShowInputModal] = useState(false);
@@ -23,27 +23,21 @@ function Index(props) {
 
   // -- table data start --
 
-  useEffect(() => {
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function getData() {
-    setIsLoading(true);
+  function getData(filter = "") {
+    seTableLoading(true);
     let config = {
       method: "get",
-      url: `${API_URL}/barang`,
+      url: `${API_URL}/barang?${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
         setData(res.data.data);
-        setIsLoading(false);
       })
-      .catch((err) => setIsLoading(false));
+      .catch((err) => console.log(err))
+      .finally(() => seTableLoading(false))
   }
-
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
 
   // -- table data end --
 
@@ -157,19 +151,19 @@ function Index(props) {
 
   return (
     <div>
-      <Spin tip="Loading..." spinning={isLoading}>
         <Sidebar
           content={
             <div>
               <Title>Barang Hilang</Title>
               <DataTable
-                dataWithIndex={dataWithIndex}
+                data={data}
                 inputModal={showModal}
                 detailModal={detailModal}
                 enableInput={true}
                 lostPage={true}
                 getData={getData}
-                loadingHandler={(value) => setIsLoading(value)}
+                isLoading={tableLoading}
+                loadingHandler={(value) => seTableLoading(value)}
               />
               <InputModal
                 modalData={images}
@@ -195,7 +189,6 @@ function Index(props) {
             </div>
           }
         />
-      </Spin>
     </div>
   );
 }

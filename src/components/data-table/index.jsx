@@ -1,14 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import swal from "sweetalert";
-import axios from "axios";
-import deleteIcon from "../../assets/deleteIcon.png";
-import { Auth } from "modules/context";
 import {
   CheckCircleOutlined,
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -19,8 +14,13 @@ import {
   Select,
   Space,
   Table,
-  Typography,
+  Typography
 } from "antd";
+import axios from "axios";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useEffect, useState } from "react";
+import swal from "sweetalert";
+import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -28,17 +28,24 @@ const { Option } = Select;
 export default function Index(props) {
   const [category, setCategory] = useState([]);
   const [status, setStatus] = useState([]);
+  const [filter, setFilter] = useState({query: "", category: ""})
   const [user] = useContext(Auth);
 
+  // -- Effect --
   useEffect(() => {
     getCategory();
     getStatus();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    props.getData(`&kategori_id=${filter.category}&search=${filter.query}&`)
+  }, [filter])
+
+  // -- API Call --
   function getCategory() {
     let config = {
       method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori",
+      url: `${API_URL}/barang-kategori`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -52,7 +59,7 @@ export default function Index(props) {
   function getStatus() {
     let config = {
       method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-status",
+      url: `${API_URL}/barang-status`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -63,7 +70,25 @@ export default function Index(props) {
       .catch((err) => console.log(err));
   }
 
+
   // -- table content start --
+
+  // Filter by category handler
+  const handleFilterCategory = value => {
+      // props.getData(`&kategori_id=${value}`
+      setFilter(prevState => ({...prevState, category: value}))
+  }
+
+  const clearFilterCategory = () => {
+      // props.getData(`&kategori_id=${value}`)
+      setFilter(prevState => ({...prevState, category: ""}))
+  }
+
+  // Filter by user query
+  const handleFilterQuery = e => {
+    // props.getData(`&search=${e.target.value}`)
+    setFilter(prevState => ({...prevState, query: e.target.value}))
+  }
 
   // show particular photo from table
   const showPhoto = () => {
@@ -86,7 +111,7 @@ export default function Index(props) {
 
         let config = {
           method: "delete",
-          url: `https://megabit-lostnfound.herokuapp.com/api/v2/barang/${idBarang}`,
+          url: `${API_URL}/barang/${idBarang}`,
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -201,6 +226,8 @@ export default function Index(props) {
                 return "#E24343";
               } else if (text === 2) {
                 return "#01AC13";
+              } else if (text === 4) {
+                return "#1B68B1"
               } else {
                 return "#000";
               }
@@ -212,7 +239,7 @@ export default function Index(props) {
       ),
     },
     {
-      title: "Action",
+      title: "Aksi",
       dataIndex: "id",
       key: "id",
       render: (text, record) => (
@@ -265,15 +292,24 @@ export default function Index(props) {
       >
         <Space size="large">
           <Input
+            allowClear
             size="large"
             placeholder="Cari di tabel"
             prefix={<SearchOutlined />}
+            onChange={handleFilterQuery}
           />
           <DatePicker size="large" placeholder="Pilih tanggal" />
-          <Select size="large" placeholder="Kategori" style={{ width: 169 }}>
-            {category.map((item) => (
-              <Option value={item.id} key={item.id}>
-                {item.nama}
+          <Select
+            size="large"
+            placeholder="Kategori"
+            style={{ width: 169 }}
+            onSelect={handleFilterCategory}
+            onClear={clearFilterCategory}
+            allowClear
+          >
+            {category.map((_category) => (
+              <Option value={_category.id} key={_category.id}>
+                {_category.nama}
               </Option>
             ))}
           </Select>
@@ -290,7 +326,7 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.dataWithIndex} />
+      <Table columns={columns} dataSource={props.data} loading={props.isLoading}/>
     </div>
   );
 }

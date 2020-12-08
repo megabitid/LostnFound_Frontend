@@ -3,66 +3,43 @@ import axios from "axios";
 import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
-import { Auth, API_URL } from "modules/context";
+import { API_URL, Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 
 const { Title } = Typography;
 
 function Index(props) {
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [data, setData] = useState([])
-  const [category, setCategory] = useState([])
-  const [status, setStatus] = useState([])
+  const [data, setData] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false);
 
   const [user] = useContext(Auth);
 
-  function getData() {
-    let config = {
-      method: 'get',
-      url: `${API_URL}/barang`,
-      headers: { 'Authorization': `Bearer ${user.token}` }
-    };
-
-    axios(config)
-      .then((res) => {
-        setData(res.data.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
   function getCategory() {
     let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori',
-      headers: { 'Authorization': `Bearer ${user.token}` }
+      method: "get",
+      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori",
+      headers: { Authorization: `Bearer ${user.token}` },
     };
-
-    axios(config)
-      .then((res) => {
-        setCategory(res.data.data)
-      })
-      .catch((err) => console.log(err));
   }
 
-  function getStatus() {
+  // -- API Call --
+  function getData(filter = "") {
+    setTableLoading(true);
+
     let config = {
-      method: 'get',
-      url: 'https://megabit-lostnfound.herokuapp.com/api/v1/barang-status',
-      headers: { 'Authorization': `Bearer ${user.token}` }
+      method: "get",
+      url: `${API_URL}/barang?status_id=4${filter}`,
+      headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
-        setStatus(res.data.data)
+        setData(res.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false));
   }
-
-  useEffect(() => {
-    getData()
-    getCategory()
-    getStatus()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // -- table data end --
 
@@ -84,10 +61,9 @@ function Index(props) {
             <Title>Barang Diklaim</Title>
             <DataTable
               data={data}
-              setData={setData}
-              category={category}
-              status={status}
+              getData={getData}
               detailModal={detailModal}
+              isLoading={tableLoading}
             />
             {/* <UpdateModal
               modalData={images}

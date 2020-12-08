@@ -17,29 +17,29 @@ function Index(props) {
   const [detailID, setDetailID] = useState(undefined);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [images, setImages] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false)
 
   // -- table data start --
 
-  useEffect(() => {
-    getData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // -- API Call --
+  function getData(filter = "") {
+    setTableLoading(true)
 
-  function getData() {
-    setIsLoading(true);
     let config = {
       method: "get",
-      url: `${API_URL}/barang?status_id=2`,
+      url: `${API_URL}/barang?status_id=2${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
         setData(res.data.data);
-        setIsLoading(false);
+        setTableLoading(false);
       })
-      .catch((err) => setIsLoading(false));
+      .catch((err) => console.log(err))
+      .finally(() => setTableLoading(false))
   }
-  const dataWithIndex = data.map((el, index) => ({ no: index + 1, ...el }));
+
   // -- input modal content start --
 
   // -- detail modal
@@ -99,9 +99,10 @@ function Index(props) {
               <Title>Barang Ditemukan</Title>
               <DataTable
                 foundPage={true}
-                dataWithIndex={dataWithIndex}
+                data={data}
                 detailModal={detailModal}
                 getData={getData}
+                isLoading={tableLoading}
                 loadingHandler={(value) => setIsLoading(value)}
               />
               <UpdateModal
