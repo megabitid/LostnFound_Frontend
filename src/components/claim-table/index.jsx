@@ -220,7 +220,7 @@ export default function Index(props) {
     <div>
       <Modal
         visible={previewVisible}
-        title={previewTitle}
+        title={null}
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >

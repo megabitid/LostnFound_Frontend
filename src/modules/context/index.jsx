@@ -16,7 +16,6 @@ export const AuthProvider = props => {
         const iniateUser = currentUser || null;
 
         setUser(iniateUser);
-        console.log(currentUser);
         setLoading(false);
 
     }, []);
