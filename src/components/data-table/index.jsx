@@ -34,12 +34,14 @@ export default function Index(props) {
   const [category, setCategory] = useState([]);
   const [status, setStatus] = useState([]);
   const [filter, setFilter] = useState({ query: "", category: "" })
+  const [image, setImage] = useState([])
   const [user] = useContext(Auth);
 
   // -- Effect --
   useEffect(() => {
     getCategory();
     getStatus();
+    getImage();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -76,6 +78,25 @@ export default function Index(props) {
   }
 
 
+  const getImage = () => {
+    let config = {
+      method: "get",
+      url: `${API_URL}/barang-images`,
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        console.log(res.data.data);
+        setImage(res.data.data);
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+
   // -- table content start --
 
   // Filter by category handler
@@ -95,58 +116,42 @@ export default function Index(props) {
     setFilter(prevState => ({ ...prevState, query: e.target.value }))
   }
 
+
   // show particular photo from table
   const showPhoto = (id_Barang) => {
-    console.log(id_Barang);
-    let config = {
-      method: "get",
-      url: `${API_URL}/barang-images?barang_id=${id_Barang}`,
-      headers: { Authorization: `Bearer ${user.token}` },
-    };
+    let imageBarang = image.filter((image) => image.barang_id === id_Barang);
+    console.log(imageBarang);
+    const settings = {
+      dots: true,
+      fade: true,
+      infinte: true,
+      speed: 500,
+      slidesToShow: 1,
+      arrows: true,
+      slidesToScroll: 1,
+      className: "slides"
+    }
 
-    axios(config)
-      .then((res) => {
-        let dataImage = res.data.data;
-        console.log(dataImage);
-
-        const settings = {
-          dots: true,
-          fade: true,
-          infinte: true,
-          speed: 500,
-          slidesToShow: 1,
-          arrows: true,
-          slidesToScroll: 1,
-          className: "slides"
-        }
-
-        Modal.info({
-          icon: null,
-          width: "500px",
-          centered: "true",
-          maskClosable: "true",
-          okText: <CloseOutlined style={{ color: "white" }} />,
-          okType: "text",
-          okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
-          content: (
-            <Slider {...settings}>
-              {dataImage.map((photo) =>
-                <div>
-                  <img width="100%" src={photo.uri} alt="" />
-                </div>
-              )}
-            </Slider>
-          )
-        });
+    Modal.info({
+      icon: null,
+      width: "500px",
+      centered: "true",
+      maskClosable: "true",
+      okText: <CloseOutlined style={{ color: "white" }} />,
+      okType: "text",
+      okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
+      content: (
+        <Slider {...settings}>
+          {imageBarang.map((photo) =>
+            <div>
+              <img width="100%" src={photo.uri} alt="" />
+            </div>
+          )}
+        </Slider>
+      )
+    });
 
 
-      })
-      .catch((err) => {
-        console.log(err)
-        notification["error"]({
-          description: "Gambar tidak terdeteksi"
-        })
-      });
   };
 
   // delete function of table
