@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Typography, Form } from "antd";
 import axios from "axios";
 import ClaimTable from "components/claim-table";
 import Sidebar from "components/sidebar";
@@ -16,6 +16,8 @@ function Index(props) {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [tableLoading, setTableLoading] = useState(false)
+  const [dataClaimAndUser, setDataClaimAndUser] = useState([])
+  const [form] = Form.useForm();
 
 
   // -- table data start --
@@ -51,8 +53,23 @@ function Index(props) {
   }
 
   // -- verification modal
-  const verificationModal = (isShow) => {
-    setShowVerificationModal(isShow);
+  const verificationModal = (dataClaim) => {
+    setShowVerificationModal(true);
+    console.log(dataClaim);
+    let idUser = dataClaim.user_id
+    // let mergeData = []
+    axios.get(
+      `https://megabit-lostnfound.herokuapp.com/api/v1/android/users/${idUser}`,
+      { headers: { 'Authorization': `Bearer ${user.token}` } }
+    ).then((res) => {
+      console.log(res.data);
+      let user = res.data
+      let mergeData = { ...user, ...dataClaim }
+      console.log(mergeData);
+      setDataClaimAndUser(mergeData)
+      form.setFieldsValue(mergeData)
+    }).catch((err) => console.log(err));
+
   };
 
   return (
@@ -71,7 +88,10 @@ function Index(props) {
             />
             <VerificationModal
               showVerificationModal={showVerificationModal}
-              setShowVerificationModal={verificationModal}
+              setShowVerificationModal={setShowVerificationModal}
+              dataClaim={dataClaimAndUser}
+              form={form}
+              getData={getData}
             />
             <UpdateModal
               modalData={images}

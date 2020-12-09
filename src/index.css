@@ -63,3 +63,41 @@
 .ant-spin-nested-loading > div > .ant-spin{
   top: 25% !important;
 }
+
+
+/* Styling modal Show Photo with slick carousel */
+ 
+.ant-modal-confirm .ant-modal-confirm-btns{
+  margin-top: 0;
+}
+
+.slides .slick-prev,
+.slides .slick-next {
+  position: absolute;
+  top: 47%;
+  z-index: 1;
+}
+
+.slides .slick-arrow{
+  background-color: #959595;
+  height: 19px;
+  width: 20px;
+  border-radius: 50%;
+}
+
+.slides .slick-dots li{
+  margin-bottom: 80px;
+  bottom: 0;
+}
+
+.slides {
+  position: relative;
+}
+
+.slides .slick-prev {
+  left: 5%;
+}
+
+.slides .slick-next {
+  right: 5%;
+}

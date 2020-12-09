@@ -1,5 +1,6 @@
 import {
   CheckCircleOutlined,
+  CloseOutlined,
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
@@ -9,6 +10,7 @@ import {
   Button,
   DatePicker,
   Input,
+  Modal,
   notification,
   Popover,
   Select,
@@ -20,6 +22,9 @@ import axios from "axios";
 import { API_URL, Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 import swal from "sweetalert";
+import Slider from "react-slick";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
@@ -91,8 +96,57 @@ export default function Index(props) {
   }
 
   // show particular photo from table
-  const showPhoto = () => {
-    alert("Showing Photo");
+  const showPhoto = (id_Barang) => {
+    console.log(id_Barang);
+    let config = {
+      method: "get",
+      url: `${API_URL}/barang-images?barang_id=${id_Barang}`,
+      headers: { Authorization: `Bearer ${user.token}` },
+    };
+
+    axios(config)
+      .then((res) => {
+        let dataImage = res.data.data;
+        console.log(dataImage);
+
+        const settings = {
+          dots: true,
+          fade: true,
+          infinte: true,
+          speed: 500,
+          slidesToShow: 1,
+          arrows: true,
+          slidesToScroll: 1,
+          className: "slides"
+        }
+
+        Modal.info({
+          icon: null,
+          width: "500px",
+          centered: "true",
+          maskClosable: "true",
+          okText: <CloseOutlined style={{ color: "white" }} />,
+          okType: "text",
+          okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
+          content: (
+            <Slider {...settings}>
+              {dataImage.map((photo) =>
+                <div>
+                  <img width="100%" src={photo.uri} alt="" />
+                </div>
+              )}
+            </Slider>
+          )
+        });
+
+
+      })
+      .catch((err) => {
+        console.log(err)
+        notification["error"]({
+          description: "Gambar tidak terdeteksi"
+        })
+      });
   };
 
   // delete function of table
@@ -181,13 +235,13 @@ export default function Index(props) {
     },
     {
       title: "Foto",
-      dataIndex: "photo",
-      key: "photo",
+      dataIndex: "id",
+      key: "id",
       render: (text) => (
         <Button
           type="link"
           style={{ textDecoration: "underline" }}
-          onClick={showPhoto}
+          onClick={() => showPhoto(text)}
         >
           Lihat Foto
         </Button>

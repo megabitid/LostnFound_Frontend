@@ -1,44 +1,80 @@
-import React from "react"
-import { Modal, Form, Input, Button } from "antd"
+import React, { useContext } from "react"
+import { Modal, Form, Input, Button, notification } from "antd"
+import { Auth } from "modules/context";
+import Axios from "axios";
 import { CloseOutlined } from "@ant-design/icons";
 
-const VerificationModal = ({ showVerificationModal, setShowVerificationModal }) => {
+
+const VerificationModal = ({ showVerificationModal, setShowVerificationModal, dataClaim, form, getData }) => {
+    const [user] = useContext(Auth);
+    console.log(dataClaim);
+
+    const onVerification = () => {
+        let config = {
+            method: 'put',
+            url: `https://megabit-lostnfound.herokuapp.com/api/v1/claims/${dataClaim.id}/verified`,
+            headers: { 'Authorization': `Bearer ${user.token}` },
+            data: { verified: 1 }
+        };
+        Axios(config)
+            .then((res) => {
+                notification["success"]({
+                    message: "Berhasil memverifikasi data",
+                    description: res.message,
+                });
+                console.log(res);
+                getData()
+            })
+            .catch((err) => {
+                console.log(err)
+                notification["error"]({
+                    message: "Gagal menghapus data",
+                    description: err.message,
+                });
+            })
+        setShowVerificationModal(false)
+        form.resetFields()
+    }
 
     return (
         <Modal
             visible={showVerificationModal}
+            title="Verifikasi klaim barang"
             centered="true"
             footer={null}
-            onCancel={() => setShowVerificationModal(false)}
+            onCancel={() => {
+                setShowVerificationModal(false)
+                form.resetFields()
+            }}
             width="350px"
             style={{ textAlign: "center" }}
         >
-            <h2>Verifikasi klaim barang</h2>
             <Form
                 layout="vertical"
                 style={{ width: "300px", fontWeight: "500", marginTop: "30px" }}
+                form={form}
             >
                 <Form.Item
                     label="Nama Lengkap"
                     name="nama"
                 >
-                    <Input />
+                    <Input disabled={true} />
                 </Form.Item>
                 <Form.Item
                     label="No. Telpon"
-                    name="telpon"
+                    name="no_telp"
                 >
-                    <Input />
+                    <Input disabled={true} />
                 </Form.Item>
                 <Form.Item
                     label="Alamat"
                     name="alamat"
                 >
-                    <Input />
+                    <Input disabled={true} />
                 </Form.Item>
                 <Form.Item
                     label="Foto Tiket"
-                    name="tiket"
+                    name="uri_tiket"
                 >
                     <Button
                         type="text"
@@ -55,7 +91,8 @@ const VerificationModal = ({ showVerificationModal, setShowVerificationModal }) 
                                 content: (
                                     <img
                                         width="100%"
-                                        src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                                        src={dataClaim.uri_tiket}
+                                        alt="Foto Tiket"
                                     />
                                 )
                             });
@@ -63,7 +100,8 @@ const VerificationModal = ({ showVerificationModal, setShowVerificationModal }) 
                     >
                         <img
                             width={100}
-                            src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                            src={dataClaim.uri_tiket}
+                            alt="Foto Tiket"
                         />
                     </Button>
 
@@ -72,12 +110,16 @@ const VerificationModal = ({ showVerificationModal, setShowVerificationModal }) 
                     style={{ textAlign: "right", marginBottom: 0 }}
                 >
                     <Button
-                        onClick={() => setShowVerificationModal(false)}
+                        onClick={() => {
+                            setShowVerificationModal(false)
+                            form.resetFields()
+                        }}
                     >
                         Cancel
                     </Button>
                     &nbsp;&nbsp;
                     <Button
+                        onClick={onVerification}
                         type="primary"
                     >
                         Verifikasi
@@ -85,7 +127,7 @@ const VerificationModal = ({ showVerificationModal, setShowVerificationModal }) 
                 </Form.Item>
 
             </Form>
-        </Modal>
+        </Modal >
     )
 }
 

@@ -123,7 +123,7 @@ export default function Index(props) {
               <Button
                 type="text"
                 icon={<DeleteOutlined />}
-                //  onClick={() => deleteData(record.id)}
+              //  onClick={() => deleteData(record.id)}
               >
                 Hapus
               </Button>
@@ -144,7 +144,7 @@ export default function Index(props) {
     <div>
       <Modal
         visible={previewVisible}
-        title={previewTitle}
+        title={null}
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >
