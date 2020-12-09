@@ -14,7 +14,7 @@ export default function Index(props) {
 
   const [user] = useContext(Auth);
 
-    //  ----[ Filter is not working yet due to unavalaible API] ----
+  //  ----[ Filter is not working yet due to unavalaible API] ----
 
   function getUsers(filter = "") {
     setTableLoading(true)
@@ -43,6 +43,7 @@ export default function Index(props) {
               data={users}
               getData={getUsers}
               isLoading={tableLoading}
+              loadingHandler={(value) => setTableLoading(value)}
             />
           </div>
         }
