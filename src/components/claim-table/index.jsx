@@ -18,7 +18,7 @@ import {
 } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import axios from "axios";
-import { API_URL, Auth } from "modules/context";
+import { Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
@@ -38,21 +38,6 @@ export default function Index(props) {
   useEffect(() => {
     props.getData(`&verified=${filter.status}&search=${filter.query}&`)
   }, [filter])
-
-  // -- API Call --
-  function getItem(id) {
-    let config = {
-      method: "get",
-      url: `${API_URL}/barang/${id}`,
-      headers: { Authorization: `Bearer ${user.token}` },
-    };
-
-    axios(config)
-      .then((res) => {
-        return res.data.nama_barang;
-      })
-      .catch((err) => console.log(err));
-  }
 
   // -- table content start --
 
