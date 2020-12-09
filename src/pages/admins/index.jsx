@@ -124,7 +124,7 @@ export default function Index(props) {
   function submitUpdateForm(data) {
     setIsUpdateLoading(true);
     let body = {
-      role_id : data
+      role : data
     }
     let config = {
       method: "patch",
@@ -170,6 +170,7 @@ export default function Index(props) {
               data={users}
               getData={getUsers}
               isLoading={tableLoading}
+              loadingHandler={(value) => setTableLoading(value)}
               inputModal={showModal}
               detailModal={detailModal}
             />

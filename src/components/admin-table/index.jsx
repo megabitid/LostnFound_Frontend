@@ -4,9 +4,13 @@ import {
   FileSearchOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Button, Input, Popover, Select, Space, Table, Typography } from "antd";
+import { Button, Input, Popover, Select, Space, Table, Typography, notification } from "antd";
 import Modal from "antd/lib/modal/Modal";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import axios from "axios";
+import swal from "sweetalert";
+import { Auth } from "modules/context";
+import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -16,6 +20,7 @@ export default function Index(props) {
   const [previewTitle, setPreviewTitle] = useState("");
   const [previewVisible, setPreviewVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [user] = useContext(Auth);
 
   // -- Effect --
   useEffect(() => {
@@ -51,6 +56,53 @@ export default function Index(props) {
   };
 
   // delete function of table
+
+  const deleteData = (value) => {
+    console.log(value);
+    swal({
+      className: "alert-delete",
+      icon: deleteIcon,
+      title: "Hapus data dari tabel ?",
+      text: "Setelah dihapus, data tersebut tidak akan muncul di dalam tabel",
+      dangerMode: true,
+      buttons: ["Batal", "Hapus"],
+    }).then((removeData) => {
+      if (removeData) {
+        let id = value;
+        console.log(id);
+        props.loadingHandler(true);
+
+        let config = {
+          method: "delete",
+          url: `https://megabit-lostnfound.herokuapp.com/api/v1/web/users/${id}`,
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+
+        axios(config)
+          .then((res) => {
+            notification["success"]({
+              message: "Berhasil menghapus data",
+              description: res.message,
+            });
+            props.getData();
+            props.loadingHandler(true);
+          })
+          .catch((err) => {
+            console.log(err);
+            notification["error"]({
+              message: "Gagal menghapus data",
+              description: err.message,
+            });
+          });
+      } else {
+        return;
+      }
+    });
+  };
+
+
 
   // table head
   const parseRole = (_id) => {
@@ -123,7 +175,7 @@ export default function Index(props) {
               <Button
                 type="text"
                 icon={<DeleteOutlined />}
-              //  onClick={() => deleteData(record.id)}
+                onClick={() => deleteData(record.id)}
               >
                 Hapus
               </Button>

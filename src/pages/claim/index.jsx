@@ -16,6 +16,7 @@ function Index(props) {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [tableLoading, setTableLoading] = useState(false)
+  const [modalLoading, setModalLoading] = useState(false);
   const [dataClaimAndUser, setDataClaimAndUser] = useState([])
   const [form] = Form.useForm();
 
@@ -56,20 +57,25 @@ function Index(props) {
   // -- verification modal
   const verificationModal = (dataClaim) => {
     setShowVerificationModal(true);
+    setModalLoading(true)
     console.log(dataClaim);
     let idUser = dataClaim.user_id
     // let mergeData = []
     axios.get(
       `https://megabit-lostnfound.herokuapp.com/api/v1/android/users/${idUser}`,
       { headers: { 'Authorization': `Bearer ${user.token}` } }
-    ).then((res) => {
-      console.log(res.data);
-      let user = res.data
-      let mergeData = { ...user, ...dataClaim }
-      console.log(mergeData);
-      setDataClaimAndUser(mergeData)
-      form.setFieldsValue(mergeData)
-    }).catch((err) => console.log(err));
+    )
+      .then((res) => {
+        console.log(res.data);
+        let user = res.data
+        let mergeData = { ...user, ...dataClaim }
+        console.log(mergeData);
+
+        setDataClaimAndUser(mergeData)
+        form.setFieldsValue(mergeData)
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setModalLoading(false))
 
   };
 
@@ -92,6 +98,8 @@ function Index(props) {
               setShowVerificationModal={setShowVerificationModal}
               dataClaim={dataClaimAndUser}
               form={form}
+              isLoading={modalLoading}
+              setTableLoading={(value) => setTableLoading(value)}
               getData={getData}
             />
             <UpdateModal
