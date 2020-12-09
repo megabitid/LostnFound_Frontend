@@ -4,6 +4,12 @@
   text-align: center;
 }
 
+.ant-menu{
+  height: 0 !important;
+}
+.ant-layout-sider-children{
+  background-color: white !important;
+}
 /* LOGOUT STYLING */
 
 .logout-style {
