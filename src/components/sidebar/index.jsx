@@ -5,7 +5,7 @@ import Logo from "../../assets/logo.png";
 import Profile from "../../assets/profile.png";
 import { Layout, Menu, Avatar, Typography } from "antd";
 import { Link } from "react-router-dom";
-import { Auth } from "../../modules/context";
+import { Auth, API_URL } from "../../modules/context";
 const { Content, Sider } = Layout;
 const { Text } = Typography;
 
@@ -23,9 +23,10 @@ function Index(props) {
     } else if (timeForUpdateToken <= newDate) {
       let config = {
         method: "get",
-        url: `https://megabit-lostnfound.herokuapp.com/api/v1/web/auth/refresh`,
+        url: `${API_URL}/web/auth/refresh`,
         headers: { Authorization: `Bearer ${user.token}` },
       };
+      
       axios(config)
         .then((res) => {
           setUser(user.token = res.data.token, user.exp = res.data.exp);

@@ -2,26 +2,16 @@ import { Typography } from "antd";
 import axios from "axios";
 import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
-import UpdateModal from "components/update-modal";
 import { API_URL, Auth } from "modules/context";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 
 const { Title } = Typography;
 
 function Index(props) {
-  const [showDetailModal, setShowDetailModal] = useState(false);
   const [data, setData] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
 
   const [user] = useContext(Auth);
-
-  function getCategory() {
-    let config = {
-      method: "get",
-      url: "https://megabit-lostnfound.herokuapp.com/api/v1/barang-kategori",
-      headers: { Authorization: `Bearer ${user.token}` },
-    };
-  }
 
   // -- API Call --
   function getData(filter = "") {
@@ -35,6 +25,7 @@ function Index(props) {
 
     axios(config)
       .then((res) => {
+        console.log(res)
         setData(res.data.data);
       })
       .catch((err) => console.log(err))
@@ -42,16 +33,6 @@ function Index(props) {
   }
 
   // -- table data end --
-
-  // -- detail modal
-
-  const detailModal = (isShow) => {
-    setShowDetailModal(isShow);
-  };
-
-  function submitUpdateForm() {
-    alert("form update submitted");
-  }
 
   return (
     <div>
@@ -62,7 +43,6 @@ function Index(props) {
             <DataTable
               data={data}
               getData={getData}
-              detailModal={detailModal}
               isLoading={tableLoading}
             />
             {/* <UpdateModal
