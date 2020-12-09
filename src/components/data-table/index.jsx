@@ -4,7 +4,7 @@ import {
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined
+  SearchOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -16,15 +16,15 @@ import {
   Select,
   Space,
   Table,
-  Typography
+  Typography,
 } from "antd";
 import axios from "axios";
 import { API_URL, Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 import swal from "sweetalert";
 import Slider from "react-slick";
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
@@ -33,8 +33,8 @@ const { Option } = Select;
 export default function Index(props) {
   const [category, setCategory] = useState([]);
   const [status, setStatus] = useState([]);
-  const [filter, setFilter] = useState({ query: "", category: "" })
-  const [image, setImage] = useState([])
+  const [filter, setFilter] = useState({ query: "", category: "" });
+  const [image, setImage] = useState([]);
   const [user] = useContext(Auth);
 
   // -- Effect --
@@ -45,8 +45,8 @@ export default function Index(props) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    props.getData(`&kategori_id=${filter.category}&search=${filter.query}&`)
-  }, [filter])
+    props.getData(`&kategori_id=${filter.category}&search=${filter.query}&`);
+  }, [filter]);
 
   // -- API Call --
   function getCategory() {
@@ -77,7 +77,6 @@ export default function Index(props) {
       .catch((err) => console.log(err));
   }
 
-
   const getImage = () => {
     let config = {
       method: "get",
@@ -89,33 +88,30 @@ export default function Index(props) {
       .then((res) => {
         console.log(res.data.data);
         setImage(res.data.data);
-
       })
       .catch((err) => {
-        console.log(err)
-      })
-  }
-
+        console.log(err);
+      });
+  };
 
   // -- table content start --
 
   // Filter by category handler
-  const handleFilterCategory = value => {
+  const handleFilterCategory = (value) => {
     // props.getData(`&kategori_id=${value}`
-    setFilter(prevState => ({ ...prevState, category: value }))
-  }
+    setFilter((prevState) => ({ ...prevState, category: value }));
+  };
 
   const clearFilterCategory = () => {
     // props.getData(`&kategori_id=${value}`)
-    setFilter(prevState => ({ ...prevState, category: "" }))
-  }
+    setFilter((prevState) => ({ ...prevState, category: "" }));
+  };
 
   // Filter by user query
-  const handleFilterQuery = e => {
+  const handleFilterQuery = (e) => {
     // props.getData(`&search=${e.target.value}`)
-    setFilter(prevState => ({ ...prevState, query: e.target.value }))
-  }
-
+    setFilter((prevState) => ({ ...prevState, query: e.target.value }));
+  };
 
   // show particular photo from table
   const showPhoto = (id_Barang) => {
@@ -129,8 +125,8 @@ export default function Index(props) {
       slidesToShow: 1,
       arrows: true,
       slidesToScroll: 1,
-      className: "slides"
-    }
+      className: "slides",
+    };
 
     Modal.info({
       icon: null,
@@ -142,16 +138,49 @@ export default function Index(props) {
       okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
       content: (
         <Slider {...settings}>
-          {imageBarang.map((photo) =>
+          {imageBarang.map((photo) => (
             <div>
               <img width="100%" src={photo.uri} alt="" />
             </div>
-          )}
+          ))}
         </Slider>
-      )
+      ),
     });
+    // axios(config)
+    //   .then((res) => {
+    //     let dataImage = res.data.data;
 
+    //     const settings = {
+    //       dots: true,
+    //       fade: true,
+    //       infinte: true,
+    //       speed: 500,
+    //       slidesToShow: 1,
+    //       arrows: true,
+    //       slidesToScroll: 1,
+    //       className: "slides"
+    //     }
 
+    //     Modal.info({
+    //       icon: null,
+    //       width: "500px",
+    //       centered: "true",
+    //       maskClosable: "true",
+    //       okText: <CloseOutlined style={{ color: "white" }} />,
+    //       okType: "text",
+    //       okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
+    //       content: (
+    //         <Slider {...settings}>
+    //           {dataImage.map((photo) =>
+    //             <div>
+    //               <img width="100%" src={photo.uri} alt="" />
+    //             </div>
+    //           )}
+    //         </Slider>
+    //       )
+    //     });
+
+    // })
   };
 
   // delete function of table
@@ -165,7 +194,7 @@ export default function Index(props) {
       buttons: ["Batal", "Hapus"],
     }).then((removeData) => {
       if (removeData) {
-        props.loadingHandler(true)
+        props.loadingHandler(true);
         let idBarang = value;
 
         let config = {
@@ -184,8 +213,7 @@ export default function Index(props) {
             });
 
             props.getData();
-            props.loadingHandler(false)
-
+            props.loadingHandler(false);
           })
           .catch((err) => {
             notification["error"]({
@@ -265,7 +293,7 @@ export default function Index(props) {
               } else if (text === 2) {
                 return "#01AC13";
               } else if (text === 4) {
-                return "#1B68B1"
+                return "#1B68B1";
               } else {
                 return "#000";
               }
@@ -293,14 +321,14 @@ export default function Index(props) {
                   Verifikasi
                 </Button>
               ) : (
-                  <Button
-                    type="text"
-                    icon={<FileSearchOutlined />}
-                    onClick={() => props.detailModal(true, record.id)}
-                  >
-                    Detail
-                  </Button>
-                )}
+                <Button
+                  type="text"
+                  icon={<FileSearchOutlined />}
+                  onClick={() => props.detailModal(true, record.id)}
+                >
+                  Detail
+                </Button>
+              )}
               <Button
                 type="text"
                 icon={<DeleteOutlined />}
@@ -364,7 +392,11 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.data} loading={props.isLoading} />
+      <Table
+        columns={columns}
+        dataSource={props.data}
+        loading={props.isLoading}
+      />
     </div>
   );
 }

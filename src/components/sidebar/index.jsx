@@ -2,7 +2,6 @@ import React, { useEffect, useContext } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import Logo from "../../assets/logo.png";
-import Profile from "../../assets/profile.png";
 import { Layout, Menu, Avatar, Typography } from "antd";
 import { Link } from "react-router-dom";
 import { Auth, API_URL } from "../../modules/context";
@@ -26,17 +25,17 @@ function Index(props) {
         url: `${API_URL}/web/auth/refresh`,
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      
+
       axios(config)
         .then((res) => {
-          setUser(user.token = res.data.token, user.exp = res.data.exp);
+          setUser((user.token = res.data.token), (user.exp = res.data.exp));
           const currentUser = JSON.parse(localStorage.getItem("user"));
           currentUser.token = res.data.token;
           currentUser.exp = res.data.exp;
-          localStorage.setItem("user", JSON.stringify(currentUser))
+          localStorage.setItem("user", JSON.stringify(currentUser));
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           localStorage.clear();
           window.location.href = "/login";
         });
@@ -96,16 +95,16 @@ function Index(props) {
               style={{ margin: "2rem auto", display: "block" }}
             />
             <Avatar
-              src={Profile}
+              src={user.image}
               size={64}
               style={{ margin: "2rem auto", display: "block" }}
             />
 
             <div align="center" style={{ margin: "-1rem 0 2rem 0" }}>
               <Text strong>
-                <h5>Dita Karang</h5>
+                <h5>{user.nama}</h5>
               </Text>
-              <h5>Admin Stasiun Gambir</h5>
+              <h6>Admin Stasiun Gambir</h6>
             </div>
             <Menu.Item
               icon={<i class="ri-dashboard-fill" style={iconStyle}></i>}

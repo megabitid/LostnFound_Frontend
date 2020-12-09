@@ -7,7 +7,6 @@ import { CloseOutlined } from "@ant-design/icons";
 
 const VerificationModal = ({ showVerificationModal, setShowVerificationModal, dataClaim, form, getData, isLoading, setTableLoading }) => {
     const [user] = useContext(Auth);
-    console.log(dataClaim);
 
     const onVerification = () => {
         let config = {

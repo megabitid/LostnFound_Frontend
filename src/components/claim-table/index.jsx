@@ -1,24 +1,24 @@
 import {
-  CheckCircleOutlined,
-  DeleteOutlined,
-  EllipsisOutlined,
+   CheckCircleOutlined,
+   DeleteOutlined,
+   EllipsisOutlined,
 
-  SearchOutlined
+   SearchOutlined
 } from "@ant-design/icons";
 import {
-  Button,
+   Button,
 
-  Input,
-  notification,
-  Popover,
-  Select,
-  Space,
-  Table,
-  Typography
+   Input,
+   notification,
+   Popover,
+   Select,
+   Space,
+   Table,
+   Typography
 } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import axios from "axios";
-import { API_URL, Auth } from "modules/context";
+import { Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
 import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
@@ -38,21 +38,6 @@ export default function Index(props) {
   useEffect(() => {
     props.getData(`&verified=${filter.status}&search=${filter.query}&`)
   }, [filter])
-
-  // -- API Call --
-  function getItem(id) {
-    let config = {
-      method: "get",
-      url: `${API_URL}/barang/${id}`,
-      headers: { Authorization: `Bearer ${user.token}` },
-    };
-
-    axios(config)
-      .then((res) => {
-        return res.data.nama_barang;
-      })
-      .catch((err) => console.log(err));
-  }
 
   // -- table content start --
 
@@ -92,7 +77,6 @@ export default function Index(props) {
     }).then((removeData) => {
       if (removeData) {
         let id = value;
-        console.log(id);
         props.loadingHandler(true);
 
         let config = {
@@ -135,9 +119,9 @@ export default function Index(props) {
     },
     {
       title: "Nama barang",
-      dataIndex: "barang_id",
-      key: "barang_id",
-      render: (text) => getItem(text)
+      dataIndex: "barang",
+      key: "barang",
+      render: (text) => text.nama_barang,
     },
     {
       title: "Nomor telepon",
@@ -224,7 +208,7 @@ export default function Index(props) {
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >
-        <img alt="user" style={{ width: "100%" }} src={imageUrl} />
+        <img alt="user" className="w-100" src={imageUrl} />
       </Modal>
       <Space
         style={{

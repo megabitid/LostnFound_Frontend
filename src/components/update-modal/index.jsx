@@ -182,7 +182,6 @@ const Index = forwardRef((props, ref) => {
           <Form
             form={form}
             layout="vertical"
-            onValuesChange={(x) => console.log(x)}
           >
             <Form.Item label="Nama Barang">
               <Input disabled={true} value={data && data.nama_barang} />
