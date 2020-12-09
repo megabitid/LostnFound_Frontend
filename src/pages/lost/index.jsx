@@ -49,7 +49,6 @@ function Index(props) {
 
   function submitForm(fieldsValue) {
     setIsInputLoading(true);
-    console.log(fieldsValue);
     let isImageError = images.filter((img) => img.status === "error");
     if (isImageError.length > 0) {
       swal("Failed!", "Failed to upload the images", "error");
@@ -128,10 +127,8 @@ function Index(props) {
       data: body,
     };
 
-    console.log(config);
     axios(config)
       .then((res) => {
-        console.log(res);
         swal({
           title: "Sukses",
           text: "Data Updated Successfully",
@@ -146,8 +143,6 @@ function Index(props) {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
-    console.log(detailID);
-    console.log(body);
   }
 
   return (
@@ -183,7 +178,7 @@ function Index(props) {
               reloadData={getData}
               visible={showDetailModal}
               isLoading={isUpdateLoading}              
-              visibleHandler={detailModal}showDetailModal
+              visibleHandler={detailModal}
               imagesHandler={(value) => setImages(value)}
               loadingHandler={(value) => setIsUpdateLoading(value)}
               submitUpdateForm={submitUpdateForm}

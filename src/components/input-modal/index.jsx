@@ -93,7 +93,6 @@ const Index = forwardRef((props, ref) => {
   };
 
   const handlePreview = async (file) => {
-    console.log(file);
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
@@ -137,7 +136,7 @@ const Index = forwardRef((props, ref) => {
               <DatePicker
                 size="default"
                 placeholder="Tanggal Kehilangan"
-                style={{ width: "100%" }}
+                className="w-100"
               />
             </Form.Item>
             <Form.Item label="Lokasi" name={"lokasi"}>
@@ -147,7 +146,7 @@ const Index = forwardRef((props, ref) => {
               <Select
                 size="default"
                 placeholder="Stasiun"
-                style={{ width: "100%" }}
+                className="w-100"
               >
                 {stasiun.map((data) => (
                   <Option value={data.id}>{data.nama}</Option>
@@ -158,7 +157,7 @@ const Index = forwardRef((props, ref) => {
               <Select
                 size="default"
                 placeholder="Kategori Barang"
-                style={{ width: "100%" }}
+                className="w-100"
               >
                 {category.map((data) => (
                   <Option value={data.id}>{data.nama}</Option>
@@ -169,7 +168,7 @@ const Index = forwardRef((props, ref) => {
               <Select
                 size="default"
                 placeholder="Stasus"
-                style={{ width: "100%" }}
+                className="w-100"
               >
                 {status.map((data) => (
                   <Option value={data.id}>{data.nama}</Option>
@@ -196,7 +195,7 @@ const Index = forwardRef((props, ref) => {
                 footer={null}
                 onCancel={() => setPreviewVisible(false)}
               >
-                <img alt="example" style={{ width: "100%" }} src={previewImg} />
+                <img alt="example" className="w-100" src={previewImg} />
               </Modal>
             </Form.Item>
             <Form.Item>

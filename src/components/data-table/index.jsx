@@ -107,7 +107,6 @@ export default function Index(props) {
     axios(config)
       .then((res) => {
         let dataImage = res.data.data;
-        console.log(dataImage);
 
         const settings = {
           dots: true,

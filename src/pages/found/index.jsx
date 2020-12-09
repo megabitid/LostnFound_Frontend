@@ -45,7 +45,6 @@ function Index(props) {
   // -- detail modal
 
   const detailModal = (isShow, id) => {
-    console.log('tessss', id)
     setIsUpdateLoading(true);
     setDetailID(id);
     setShowDetailModal(isShow);
@@ -53,7 +52,6 @@ function Index(props) {
 
   function submitUpdateForm(datas) {
     setIsUpdateLoading(true)
-    console.log('called')
     let body = datas;
     delete body["id"];
     delete body["warna"];
@@ -69,10 +67,8 @@ function Index(props) {
       data: body,
     };
 
-    console.log(config);
     axios(config)
       .then((res) => {
-        console.log(res);
         swal({
           title: "Sukses",
           text: "Data Updated Successfully",
@@ -87,10 +83,7 @@ function Index(props) {
           .catch((err) => console.log(err));
       })
     //   .catch((err) => console.log(err));
-    console.log(detailID);
-    console.log(body);
-  }
-
+    }
   return (
     <div>
       <Spin tip="Loading..." spinning={isLoading}>

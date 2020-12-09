@@ -73,10 +73,8 @@ function Index(props) {
       data: body,
     };
 
-    console.log(config);
     axios(config)
       .then((res) => {
-        console.log(res);
         swal({
           title: "Sukses",
           text: "Data Updated Successfully",
@@ -92,8 +90,6 @@ function Index(props) {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
-    console.log(detailID);
-    console.log(body);
   }
 
   return (

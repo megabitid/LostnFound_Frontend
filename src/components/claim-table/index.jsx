@@ -77,7 +77,6 @@ export default function Index(props) {
     }).then((removeData) => {
       if (removeData) {
         let id = value;
-        console.log(id);
         props.loadingHandler(true);
 
         let config = {
@@ -209,7 +208,7 @@ export default function Index(props) {
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >
-        <img alt="user" style={{ width: "100%" }} src={imageUrl} />
+        <img alt="user" className="w-100" src={imageUrl} />
       </Modal>
       <Space
         style={{

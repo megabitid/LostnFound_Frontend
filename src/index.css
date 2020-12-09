@@ -101,3 +101,23 @@
 .slides .slick-next {
   right: 5%;
 }
+
+
+/* INPUT ADMIN */
+
+.admin-loader .ant-spin-nested-loading > div > .ant-spin{
+  top: 10% !important;
+}
+.ant-upload.ant-upload-select-picture-card{
+  width: 100%;
+}
+
+.admin-upload{
+  font-size: 1.5rem;
+  color: #2d90e0;
+}
+
+.avatar-uploader .ant-upload.ant-upload-select-picture-card{
+  background-color: white !important;
+  border: none;
+}
