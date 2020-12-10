@@ -50,7 +50,7 @@ const VerificationModal = ({ showVerificationModal, setShowVerificationModal, da
                 width="350px"
                 style={{ textAlign: "center" }}
             >
-                <Spin tip="Loading..." spinning={isLoading}>
+                <Spin tip="Loading..." spinning={isLoading} className="spin-modal-verification">
                     <Form
                         layout="vertical"
                         style={{ width: "300px", fontWeight: "500" }}
