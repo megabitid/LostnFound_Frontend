@@ -110,18 +110,16 @@ function Index(props) {
     setShowDetailModal(isShow);
   };
 
-  function submitUpdateForm(datas) {
+  function submitUpdateForm(value) {
     setIsUpdateLoading(true)
-    let body = datas;
-    delete body["id"];
-    delete body["warna"];
-    delete body["merek"];
-    delete body["lokasi"];
-    delete body["created_at"];
-    delete body["updated_at"];
+    let body = {
+      _method : 'PATCH',
+      status_id : value
+    }
+
 
     let config = {
-      method: "put",
+      method: "post",
       url: `${API_URL}/barang/${detailID}`,
       headers: { Authorization: `Bearer ${user.token}` },
       data: body,

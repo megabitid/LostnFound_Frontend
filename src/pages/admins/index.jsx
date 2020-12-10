@@ -124,10 +124,11 @@ export default function Index(props) {
   function submitUpdateForm(data) {
     setIsUpdateLoading(true);
     let body = {
+      _method: 'PATCH',
       role : data
     }
     let config = {
-      method: "patch",
+      method: "post",
       url: `${API_URL}/web/users/${detailID}`,
       headers: { Authorization: `Bearer ${user.token}` },
       data: body,

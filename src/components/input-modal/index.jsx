@@ -139,15 +139,8 @@ const Index = forwardRef((props, ref) => {
                 className="w-100"
               />
             </Form.Item>
-            <Form.Item label="Lokasi" name={"lokasi"}>
-              <Input placeholder="Lokasi" />
-            </Form.Item>
             <Form.Item label="Stasiun" name={"stasiun_id"}>
-              <Select
-                size="default"
-                placeholder="Stasiun"
-                className="w-100"
-              >
+              <Select size="default" placeholder="Stasiun" className="w-100">
                 {stasiun.map((data) => (
                   <Option value={data.id}>{data.nama}</Option>
                 ))}
@@ -165,11 +158,7 @@ const Index = forwardRef((props, ref) => {
               </Select>
             </Form.Item>
             <Form.Item label="Stasus" name="status_id">
-              <Select
-                size="default"
-                placeholder="Stasus"
-                className="w-100"
-              >
+              <Select size="default" placeholder="Stasus" className="w-100">
                 {status.map((data) => (
                   <Option value={data.id}>{data.nama}</Option>
                 ))}

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, forwardRef } from "react";
 import axios from "axios";
 import moment from "moment";
 import { Auth, API_URL } from "../../modules/context";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Modal,
   Button,
@@ -56,10 +55,11 @@ const Index = forwardRef((props, ref) => {
 
     axios(config)
       .then((res) => {
+        console.log(res)
         setData(res.data);
-        getStasiun(res.data);
+        getStasiun(res.data.stasiun.id);
         getStatus(res.data);
-        getKategori(res.data);
+        getKategori(res.data.kategori.id);
         props.loadingHandler(false);
       })
       .catch((err) => console.log(err));
@@ -86,10 +86,10 @@ const Index = forwardRef((props, ref) => {
       .catch((err) => console.log(err));
   }
 
-  function getStasiun(res) {
+  function getStasiun(id) {
     let config = {
       method: "get",
-      url: `${API_URL}/stasiun/${res.stasiun_id}`,
+      url: `${API_URL}/stasiun/${id}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -100,10 +100,10 @@ const Index = forwardRef((props, ref) => {
       .catch((err) => console.log(err));
   }
 
-  function getKategori(res) {
+  function getKategori(id) {
     let config = {
       method: "get",
-      url: `${API_URL}/barang-kategori/${res.kategori_id}`,
+      url: `${API_URL}/barang-kategori/${id}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
@@ -156,19 +156,6 @@ const Index = forwardRef((props, ref) => {
 
   const handleChange = ({ fileList }) => props.fileListHandler(fileList);
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
-  function changeStatus(key) {
-    let datas = data;
-    datas.status_id = key;
-    setData(datas);
-    setStatus(key);
-  }
   return (
     <div>
       <Modal
@@ -179,10 +166,7 @@ const Index = forwardRef((props, ref) => {
         onCancel={() => props.visibleHandler(false)}
       >
         <Spin tip="Loading..." spinning={props.isLoading}>
-          <Form
-            form={form}
-            layout="vertical"
-          >
+          <Form form={form} layout="vertical">
             <Form.Item label="Nama Barang">
               <Input disabled={true} value={data && data.nama_barang} />
             </Form.Item>
@@ -192,13 +176,6 @@ const Index = forwardRef((props, ref) => {
                 size="default"
                 value={data && moment(data.tanggal)}
                 className="w-100"
-              />
-            </Form.Item>
-            <Form.Item label="Lokasi">
-              <Input
-                placeholder="Lokasi"
-                disabled={true}
-                value={data && data.lokasi}
               />
             </Form.Item>
             <Form.Item label="Stasiun">
@@ -225,7 +202,7 @@ const Index = forwardRef((props, ref) => {
                 placeholder="Status"
                 className="w-100"
                 value={status}
-                onChange={changeStatus}
+                onChange={(key) => setStatus(key)}
               >
                 {statuses.map((data) => (
                   <Option value={data.id}>{data.nama}</Option>
@@ -248,9 +225,7 @@ const Index = forwardRef((props, ref) => {
                 onPreview={handlePreview}
                 onChange={handleChange}
                 disabled={true}
-              >
-                {props.modalData.length >= 8 ? null : uploadButton}
-              </Upload>
+              />
               <Modal
                 visible={previewVisible}
                 title={previewTitle}
@@ -265,7 +240,7 @@ const Index = forwardRef((props, ref) => {
                 type="primary"
                 htmlType="submit"
                 className="ml-1 float-right"
-                onClick={() => props.submitUpdateForm(data)}
+                onClick={() => props.submitUpdateForm(status)}
               >
                 Submit
               </Button>

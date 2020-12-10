@@ -114,7 +114,7 @@
 .admin-loader .ant-spin-nested-loading > div > .ant-spin{
   top: 10% !important;
 }
-.ant-upload.ant-upload-select-picture-card{
+.admin-loader .ant-upload.ant-upload-select-picture-card{
   width: 100%;
 }
 
@@ -123,7 +123,7 @@
   color: #2d90e0;
 }
 
-.avatar-uploader .ant-upload.ant-upload-select-picture-card{
+.admin-loader .avatar-uploader .ant-upload.ant-upload-select-picture-card{
   background-color: white !important;
   border: none;
 }
