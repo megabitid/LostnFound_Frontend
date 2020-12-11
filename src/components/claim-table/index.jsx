@@ -1,20 +1,20 @@
 import {
-   CheckCircleOutlined,
-   DeleteOutlined,
-   EllipsisOutlined,
+  CheckCircleOutlined,
+  DeleteOutlined,
+  EllipsisOutlined,
 
-   SearchOutlined
+  SearchOutlined
 } from "@ant-design/icons";
 import {
-   Button,
+  Button,
 
-   Input,
-   notification,
-   Popover,
-   Select,
-   Space,
-   Table,
-   Typography
+  Input,
+  notification,
+  Popover,
+  Select,
+  Space,
+  Table,
+  Typography
 } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import axios from "axios";
@@ -204,7 +204,7 @@ export default function Index(props) {
     <div>
       <Modal
         visible={previewVisible}
-        title={null}
+        title={previewTitle}
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >
