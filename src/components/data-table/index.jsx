@@ -4,7 +4,7 @@ import {
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -12,19 +12,20 @@ import {
   Input,
   Modal,
   notification,
+  Pagination,
   Popover,
   Select,
   Space,
   Table,
-  Typography,
+  Typography
 } from "antd";
 import axios from "axios";
 import { API_URL, Auth } from "modules/context";
 import React, { useContext, useEffect, useState } from "react";
-import swal from "sweetalert";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
@@ -36,6 +37,7 @@ export default function Index(props) {
   const [filter, setFilter] = useState({ query: "", category: "" });
   const [image, setImage] = useState([]);
   const [user] = useContext(Auth);
+  const [currentPage, setCurrentPage] = useState(1)
 
   // -- Effect --
   useEffect(() => {
@@ -45,8 +47,8 @@ export default function Index(props) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    props.getData(`&kategori_id=${filter.category}&search=${filter.query}&`);
-  }, [filter]);
+    props.getData(`&kategori_id=${filter.category}&search=${filter.query}&`, currentPage);
+  }, [filter, currentPage]);
 
   // -- API Call --
   function getCategory() {
@@ -133,54 +135,19 @@ export default function Index(props) {
       width: "500px",
       centered: "true",
       maskClosable: "true",
-      okText: <CloseOutlined style={{ color: "white" }} />,
+      okText: <CloseOutlined style={ { color: "white" } } />,
       okType: "text",
       okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
       content: (
-        <Slider {...settings}>
+        <Slider { ...settings }>
           {imageBarang.map((photo) => (
             <div>
-              <img width="100%" src={photo.uri} alt="" />
+              <img width="100%" src={ photo.uri } alt="" />
             </div>
-          ))}
+          )) }
         </Slider>
       ),
     });
-    // axios(config)
-    //   .then((res) => {
-    //     let dataImage = res.data.data;
-
-    //     const settings = {
-    //       dots: true,
-    //       fade: true,
-    //       infinte: true,
-    //       speed: 500,
-    //       slidesToShow: 1,
-    //       arrows: true,
-    //       slidesToScroll: 1,
-    //       className: "slides"
-    //     }
-
-    //     Modal.info({
-    //       icon: null,
-    //       width: "500px",
-    //       centered: "true",
-    //       maskClosable: "true",
-    //       okText: <CloseOutlined style={{ color: "white" }} />,
-    //       okType: "text",
-    //       okButtonProps: { style: { position: "absolute", top: -25, right: -30 } },
-    //       content: (
-    //         <Slider {...settings}>
-    //           {dataImage.map((photo) =>
-    //             <div>
-    //               <img width="100%" src={photo.uri} alt="" />
-    //             </div>
-    //           )}
-    //         </Slider>
-    //       )
-    //     });
-
-    // })
   };
 
   // delete function of table
@@ -264,7 +231,7 @@ export default function Index(props) {
       title: "Kategori",
       dataIndex: "kategori_id",
       key: "kategori_id",
-      render: (text) => <Text>{parseCategory(text)}</Text>,
+      render: (text) => <Text>{ parseCategory(text) }</Text>,
     },
     {
       title: "Foto",
@@ -273,8 +240,8 @@ export default function Index(props) {
       render: (text) => (
         <Button
           type="link"
-          style={{ textDecoration: "underline" }}
-          onClick={() => showPhoto(text)}
+          style={ { textDecoration: "underline" } }
+          onClick={ () => showPhoto(text) }
         >
           Lihat Foto
         </Button>
@@ -286,7 +253,7 @@ export default function Index(props) {
       key: "status_id",
       render: (text) => (
         <Text
-          style={{
+          style={ {
             color: (() => {
               if (text === 1) {
                 return "#E24343";
@@ -298,9 +265,9 @@ export default function Index(props) {
                 return "#000";
               }
             })(),
-          }}
+          } }
         >
-          {parseStatus(text)}
+          {parseStatus(text) }
         </Text>
       ),
     },
@@ -312,34 +279,34 @@ export default function Index(props) {
         <Popover
           content={
             <Space direction="vertical">
-              {props.allowVerification ? (
+              { props.allowVerification ? (
                 <Button
                   type="text"
-                  icon={<CheckCircleOutlined />}
-                  onClick={() => props.verificationModal(true)}
+                  icon={ <CheckCircleOutlined /> }
+                  onClick={ () => props.verificationModal(true) }
                 >
                   Verifikasi
                 </Button>
               ) : (
-                <Button
-                  type="text"
-                  icon={<FileSearchOutlined />}
-                  onClick={() => props.detailModal(true, record.id)}
-                >
-                  Detail
-                </Button>
-              )}
+                  <Button
+                    type="text"
+                    icon={ <FileSearchOutlined /> }
+                    onClick={ () => props.detailModal(true, record.id) }
+                  >
+                    Detail
+                  </Button>
+                ) }
               <Button
                 type="text"
-                icon={<DeleteOutlined />}
-                onClick={() => deleteData(record.id)}
+                icon={ <DeleteOutlined /> }
+                onClick={ () => deleteData(record.id) }
               >
                 Hapus
               </Button>
             </Space>
           }
         >
-          <Button type="text" icon={<EllipsisOutlined />} />
+          <Button type="text" icon={ <EllipsisOutlined /> } />
         </Popover>
       ),
     },
@@ -347,56 +314,78 @@ export default function Index(props) {
 
   // -- table content end --
 
+  // -- pagination --
+  const handlePagination = page => {
+    setCurrentPage(page)
+    // props.getData(,)
+  };
+
+  const footer = () => (
+    <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
+      <Text>Page {props.paginationData.current_page} of {props.paginationData.last_page}</Text>
+      <Pagination
+        onChange={ handlePagination }
+        total={ props.paginationData?.total }
+        defaultPageSize={ props.paginationData?.per_page }
+        pageSize={ 20 }
+        defaultCurrent={ 1 }
+        current={ currentPage }
+      />
+    </div>
+  )
+
   return (
-    <div>
+    <>
       <Space
-        style={{
+        style={ {
           marginBottom: 16,
           width: "100%",
           justifyContent: "space-between",
-        }}
+        } }
       >
         <Space size="large">
           <Input
             allowClear
             size="large"
             placeholder="Cari di tabel"
-            prefix={<SearchOutlined />}
-            onChange={handleFilterQuery}
+            prefix={ <SearchOutlined /> }
+            onChange={ handleFilterQuery }
           />
           <DatePicker size="large" placeholder="Pilih tanggal" />
           <Select
             size="large"
             placeholder="Kategori"
-            style={{ width: 169 }}
-            onSelect={handleFilterCategory}
-            onClear={clearFilterCategory}
+            style={ { width: 169 } }
+            onSelect={ handleFilterCategory }
+            onClear={ clearFilterCategory }
             allowClear
           >
-            {category.map((_category) => (
-              <Option value={_category.id} key={_category.id}>
-                {_category.nama}
+            { category.map((_category) => (
+              <Option value={ _category.id } key={ _category.id }>
+                {_category.nama }
               </Option>
-            ))}
+            )) }
           </Select>
         </Space>
-        {props.enableInput && (
+        { props.enableInput && (
           <Button
             type="primary"
             size="large"
-            onClick={() => {
+            onClick={ () => {
               props.inputModal(true);
-            }}
+            } }
           >
             Input data
           </Button>
-        )}
+        ) }
       </Space>
       <Table
-        columns={columns}
-        dataSource={props.data}
-        loading={props.isLoading}
+        columns={ columns }
+        dataSource={ props.data }
+        loading={ props.isLoading }
+        pagination={ false }
+        footer={ footer }
       />
-    </div>
+    </>
   );
 }
