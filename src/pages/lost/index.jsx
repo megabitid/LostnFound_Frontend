@@ -34,6 +34,7 @@ function Index(props) {
     axios(config)
       .then((res) => {
         setData(res.data.data);
+        console.log(res.data.data.length)
       })
       .catch((err) => console.log(err))
       .finally(() => seTableLoading(false))
