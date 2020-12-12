@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import { Spin, Typography } from "antd";
 import axios from "axios";
-import swal from "sweetalert";
-import { Typography, Spin } from "antd";
 import DataTable from "components/data-table";
 import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
-import { Auth, API_URL } from "modules/context";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useState } from "react";
+import swal from "sweetalert";
 
 const { Title } = Typography;
 
@@ -18,23 +18,25 @@ function Index(props) {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [images, setImages] = useState([]);
   const [tableLoading, setTableLoading] = useState(false)
+  const [paginationData, setPaginationData] = useState({})
+
 
   // -- table data start --
 
   // -- API Call --
-  function getData(filter = "") {
+  function getData(filter = "", page = 1) {
     setTableLoading(true)
 
     let config = {
       method: "get",
-      url: `${API_URL}/barang?status_id=2${filter}`,
+      url: `${API_URL}/barang?page=${page}&status_id=2${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
         setData(res.data.data);
-        setTableLoading(false);
+        setPaginationData(res.data.meta)
       })
       .catch((err) => console.log(err))
       .finally(() => setTableLoading(false))
@@ -98,6 +100,7 @@ function Index(props) {
                 getData={getData}
                 isLoading={tableLoading}
                 loadingHandler={(value) => setIsLoading(value)}
+                paginationData={paginationData}
               />
               <UpdateModal
                 id={detailID}

@@ -1,12 +1,12 @@
-import React, { useContext, useState, useRef } from "react";
-import axios from "axios";
-import swal from "sweetalert";
 import { Typography } from "antd";
-import { Auth, API_URL } from "modules/context";
-import Sidebar from "components/sidebar";
+import axios from "axios";
 import DataTable from "components/data-table";
 import InputModal from "components/input-modal";
+import Sidebar from "components/sidebar";
 import UpdateModal from "components/update-modal";
+import { API_URL, Auth } from "modules/context";
+import React, { useContext, useRef, useState } from "react";
+import swal from "sweetalert";
 const { Title } = Typography;
 
 function Index(props) {
@@ -15,29 +15,30 @@ function Index(props) {
   const [data, setData] = useState([]);
   const [images, setImages] = useState([]);
   const [detailID, setDetailID] = useState(undefined);
-  const [tableLoading, seTableLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [isInputLoading, setIsInputLoading] = useState(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [showInputModal, setShowInputModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [paginationData, setPaginationData] = useState({})
 
   // -- table data start --
 
-  function getData(filter = "") {
-    seTableLoading(true);
+  function getData(filter = "", page = 1) {
+    setTableLoading(true);
     let config = {
       method: "get",
-      url: `${API_URL}/barang?${filter}`,
+      url: `${API_URL}/barang?page=${page}${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
         setData(res.data.data);
-        console.log(res.data.data.length)
+        setPaginationData(res.data.meta)
       })
       .catch((err) => console.log(err))
-      .finally(() => seTableLoading(false))
+      .finally(() => setTableLoading(false))
   }
 
   // -- table data end --
@@ -158,8 +159,9 @@ function Index(props) {
               lostPage={true}
               getData={getData}
               isLoading={tableLoading}
-              setIsLoading={seTableLoading}
-              loadingHandler={(value) => seTableLoading(value)}
+              setIsLoading={setTableLoading}
+              loadingHandler={(value) => setTableLoading(value)}
+              paginationData={paginationData}
             />
             <InputModal
               modalData={images}
@@ -176,7 +178,7 @@ function Index(props) {
               modalData={images}
               reloadData={getData}
               visible={showDetailModal}
-              isLoading={isUpdateLoading}              
+              isLoading={isUpdateLoading}
               visibleHandler={detailModal}
               imagesHandler={(value) => setImages(value)}
               loadingHandler={(value) => setIsUpdateLoading(value)}

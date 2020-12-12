@@ -10,22 +10,25 @@ const { Title } = Typography;
 function Index(props) {
   const [data, setData] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
+  const [paginationData, setPaginationData] = useState({})
+
 
   const [user] = useContext(Auth);
 
   // -- API Call --
-  function getData(filter = "") {
+  function getData(filter = "", page = 1) {
     setTableLoading(true);
 
     let config = {
       method: "get",
-      url: `${API_URL}/barang?status_id=4${filter}`,
+      url: `${API_URL}/barang?page=${page}&status_id=4${filter}`,
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
     axios(config)
       .then((res) => {
         setData(res.data.data);
+        setPaginationData(res.data.meta)
       })
       .catch((err) => console.log(err))
       .finally(() => setTableLoading(false));
@@ -43,6 +46,7 @@ function Index(props) {
               data={data}
               getData={getData}
               isLoading={tableLoading}
+              paginationData={paginationData}
             />
             {/* <UpdateModal
               modalData={images}
