@@ -67,8 +67,14 @@
 }
 /* OVERLAY */
 .ant-spin-nested-loading > div > .ant-spin{
-  top: 25% !important;
+  top: 25%;
 }
+
+/*Spin modal verifcation */
+.spin-modal-verification{
+  top: 0 !important;
+}
+
 
 
 /* Styling modal Show Photo with slick carousel */

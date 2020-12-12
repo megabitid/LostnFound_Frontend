@@ -1,8 +1,8 @@
-import React, {useContext} from "react";
-import {Route, Redirect} from "react-router-dom";
+import React, { useContext } from "react";
+import { Route, Redirect } from "react-router-dom";
 import { Auth } from "../modules/context"
 
-const AuthRoute = ({ component : Component , ...rest  }) => {
+const AuthRoute = ({ component: Component, ...rest }) => {
 
     const [user] = useContext(Auth)
 
@@ -12,7 +12,7 @@ const AuthRoute = ({ component : Component , ...rest  }) => {
             render={props => {
                 return user
                     ? <Component {...props} />
-                    : <Redirect to={"/login"}/>
+                    : <Redirect to={"/login"} />
             }}
         />
     )
