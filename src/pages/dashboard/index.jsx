@@ -13,16 +13,23 @@ export default function Index(props) {
   const [lostChartData, setLostChartData] = useState([])
   const [statData, setStatData] = useState({})
 
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
 
 
   const [user] = useContext(Auth)
 
-  // -- Effect --
-  useEffect(() => {
-    getStatData()
-    // getChartData("hilang")
-    // getChartData("ditemukan")
-  },[])
+  // -- Chart Data Processing --
+  const objectMap = (obj, fn) =>
+    Object.entries(obj).map(
+      ([k, v], i) => fn(k, v, i)
+    )
+
+  const normalizeData = (k, v) => {
+    let dayIndex = new Date(k).getDay();
+    let dayName = days[dayIndex]
+
+    return { dayIndex, dayName, date: k, items: v }
+  }
 
   // -- API call --
   function getChartData(status) {
@@ -33,13 +40,21 @@ export default function Index(props) {
       headers: { Authorization: `Bearer ${user.token}` },
     };
 
-    // axios(config)
-    //   .then((res) => {
-    //     setData(res.data.data);
-    //     setPaginationData(res.data.meta)
-    //   })
-    //   .catch((err) => console.log(err))
-    //   .finally(() => setTableLoading(false))
+    axios(config)
+      .then((res) => {
+        let normalizedData = objectMap(res.data, (key, val) => normalizeData(key, val))
+        switch (status) {
+          case "hilang":
+            setLostChartData(normalizedData)
+            break;
+          case "ditemukan":
+            setFoundChartData(normalizedData)
+            break;
+          default:
+            break;
+        }
+      })
+      .catch((err) => console.log(err))
   }
 
   function getStatData() {
@@ -55,29 +70,14 @@ export default function Index(props) {
         setStatData(res.data);
       })
       .catch((err) => console.log(err))
-      // .finally(() => setTableLoading(false))
   }
 
-  const lostItems = [
-    { hari: 'Senin', jumlah: 4 },
-    { hari: 'Selasa', jumlah: 2 },
-    { hari: 'Rabu', jumlah: 3 },
-    { hari: 'Kamis', jumlah: 1 },
-    { hari: 'Jumat', jumlah: 4 },
-    { hari: 'Sabtu', jumlah: 3 },
-    { hari: 'Minggu', jumlah: 4 },
-  ];
-
-  const foundItems = [
-    { hari: 'Senin', jumlah: 4 },
-    { hari: 'Selasa', jumlah: 3 },
-    { hari: 'Rabu', jumlah: 3 },
-    { hari: 'Kamis', jumlah: 1 },
-    { hari: 'Jumat', jumlah: 3 },
-    { hari: 'Sabtu', jumlah: 1 },
-    { hari: 'Minggu', jumlah: 4 },
-  ];
-
+  // -- Effect --
+  useEffect(() => {
+    getStatData()
+    getChartData("hilang")
+    getChartData("ditemukan")
+  }, [])
 
   return (
     <div>
@@ -85,48 +85,48 @@ export default function Index(props) {
         content={
           <>
             <Title>Dashboard</Title>
-            <Row gutter={[66, 48]}>
-              <Col span={6}>
+            <Row gutter={ [66, 48] }>
+              <Col span={ 6 }>
                 <StatCard
                   title="Laporan barang hilang"
                   // isIncreased={statData.this_month.hilang > statData?.last_month?.hilang ? true : false }
-                  stats={statData.this_month.hilang ?? 0}
-                  change={statData.percentage.hilang ?? 0}
+                  stats={ statData?.this_month?.hilang ?? 0 }
+                  change={ statData?.percentage?.hilang ?? 0 }
                 />
               </Col>
-              <Col span={6}>
+              <Col span={ 6 }>
                 <StatCard
                   title="Barang ditemukan"
-                  stats={statData.this_month.ditemukan ?? 0}
-                  change={statData.percentage.ditemukan ?? 0}
+                  stats={ statData?.this_month?.ditemukan ?? 0 }
+                  change={ statData?.percentage?.ditemukan ?? 0 }
                 />
               </Col>
-              <Col span={6}>
+              <Col span={ 6 }>
                 <StatCard
                   title="Barang berhasil diklaim"
-                  stats={statData.this_month.diklaim ?? 0}
-                  change={statData.percentage.diklaim ?? 0}
+                  stats={ statData?.this_month?.diklaim ?? 0 }
+                  change={ statData?.percentage?.diklaim ?? 0 }
                 />
               </Col>
-              <Col span={6}>
+              <Col span={ 6 }>
                 <StatCard
                   title="Barang didonasikan"
                   isIncreased
-                  stats={statData.this_month.didonasikan ?? 0}
-                  change={statData.percentage.didonasikan ?? 0}
+                  stats={ statData?.this_month?.didonasikan ?? 0 }
+                  change={ statData?.percentage?.didonasikan ?? 0 }
                 />
               </Col>
             </Row>
-            <Row gutter={66}>
-              <Col span={12}>
+            <Row gutter={ 66 }>
+              <Col span={ 12 }>
                 <ChartCard
                   isLost
-                  data={lostItems}
+                  data={ lostChartData }
                 />
               </Col>
-              <Col span={12}>
+              <Col span={ 12 }>
                 <ChartCard
-                  data={foundItems}
+                  data={ foundChartData }
                 />
               </Col>
             </Row>
