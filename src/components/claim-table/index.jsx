@@ -249,7 +249,7 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.data} loading={props.isLoading} />
+      <Table columns={columns} dataSource={props.data} loading={props.isLoading} style={{boxShadow: "0px 10px 30px rgba(0, 9, 44, 0.1)"}} />
     </div>
   );
 }
