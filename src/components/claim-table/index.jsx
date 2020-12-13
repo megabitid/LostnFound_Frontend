@@ -30,7 +30,6 @@ export default function Index(props) {
   const [filter, setFilter] = useState({ query: "", status: "" })
   const [user] = useContext(Auth);
 
-  const [previewTitle, setPreviewTitle] = useState("");
   const [previewVisible, setPreviewVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState("")
 
@@ -61,7 +60,6 @@ export default function Index(props) {
   // show particular photo from table
   const showPhoto = uri_tiket => {
     setImageUrl(uri_tiket);
-    setPreviewTitle(uri_tiket.substring(uri_tiket.lastIndexOf("/") + 1));
     setPreviewVisible(true)
   };
 
@@ -204,7 +202,7 @@ export default function Index(props) {
     <div>
       <Modal
         visible={previewVisible}
-        title={previewTitle}
+        // title={previewTitle}
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >
@@ -249,7 +247,12 @@ export default function Index(props) {
           </Button>
         )}
       </Space>
-      <Table columns={columns} dataSource={props.data} loading={props.isLoading} style={{boxShadow: "0px 10px 30px rgba(0, 9, 44, 0.1)"}} />
+      <Table
+        columns={columns}
+        dataSource={props.data}
+        loading={props.isLoading}
+        style={{boxShadow: "0px 10px 30px rgba(0, 9, 44, 0.1)"}}
+      />
     </div>
   );
 }

@@ -385,6 +385,7 @@ export default function Index(props) {
         loading={ props.isLoading }
         pagination={ false }
         footer={ footer }
+        style={{boxShadow: "0px 10px 30px rgba(0, 9, 44, 0.1)"}}
       />
     </>
   );
