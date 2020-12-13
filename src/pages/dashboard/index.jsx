@@ -1,4 +1,4 @@
-import { Col, Row, Typography } from 'antd';
+import { Col, Row, Spin, Typography } from 'antd';
 import axios from "axios";
 import ChartCard from "components/chart-card";
 import Sidebar from "components/sidebar";
@@ -12,6 +12,7 @@ export default function Index(props) {
   const [foundChartData, setFoundChartData] = useState([])
   const [lostChartData, setLostChartData] = useState([])
   const [statData, setStatData] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
 
@@ -33,6 +34,7 @@ export default function Index(props) {
 
   // -- API call --
   function getChartData(status) {
+    setIsLoading(true)
     let config = {
       method: "get",
       // only support v1 API
@@ -55,9 +57,11 @@ export default function Index(props) {
         }
       })
       .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false))
   }
 
   function getStatData() {
+    setIsLoading(true)
     let config = {
       method: "get",
       // only support v1 API
@@ -70,6 +74,7 @@ export default function Index(props) {
         setStatData(res.data);
       })
       .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false))
   }
 
   // -- Effect --
@@ -85,35 +90,36 @@ export default function Index(props) {
         content={
           <>
             <Title>Dashboard</Title>
+            <Spin spinning={isLoading}>
             <Row gutter={ [66, 48] }>
               <Col span={ 6 }>
                 <StatCard
                   title="Laporan barang hilang"
                   // isIncreased={statData.this_month.hilang > statData?.last_month?.hilang ? true : false }
-                  stats={ statData?.this_month?.hilang ?? 0 }
-                  change={ statData?.percentage?.hilang ?? 0 }
+                  stats={ statData?.this_month?.hilang ?? "-" }
+                  change={ statData?.percentage?.hilang ?? "-" }
                 />
               </Col>
               <Col span={ 6 }>
                 <StatCard
                   title="Barang ditemukan"
-                  stats={ statData?.this_month?.ditemukan ?? 0 }
-                  change={ statData?.percentage?.ditemukan ?? 0 }
+                  stats={ statData?.this_month?.ditemukan ?? "-" }
+                  change={ statData?.percentage?.ditemukan ?? "-" }
                 />
               </Col>
               <Col span={ 6 }>
                 <StatCard
                   title="Barang berhasil diklaim"
-                  stats={ statData?.this_month?.diklaim ?? 0 }
-                  change={ statData?.percentage?.diklaim ?? 0 }
+                  stats={ statData?.this_month?.diklaim ?? "-" }
+                  change={ statData?.percentage?.diklaim ?? "-" }
                 />
               </Col>
               <Col span={ 6 }>
                 <StatCard
                   title="Barang didonasikan"
                   isIncreased
-                  stats={ statData?.this_month?.didonasikan ?? 0 }
-                  change={ statData?.percentage?.didonasikan ?? 0 }
+                  stats={ statData?.this_month?.didonasikan ?? "-" }
+                  change={ statData?.percentage?.didonasikan ?? "-" }
                 />
               </Col>
             </Row>
@@ -130,6 +136,7 @@ export default function Index(props) {
                 />
               </Col>
             </Row>
+            </Spin>
           </>
         }
       />
