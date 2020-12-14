@@ -21,7 +21,7 @@ function index({ isLost, data }) {
                shape="smooth"
                point
                area
-               position="hari*jumlah"
+               position="dayName*items"
                color={isLost ? "#F58634" : "#1B68B1"}
             />
          </Chart>

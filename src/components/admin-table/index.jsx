@@ -2,14 +2,14 @@ import {
   DeleteOutlined,
   EllipsisOutlined,
   FileSearchOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
-import { Button, Input, Popover, Select, Space, Table, Typography, notification } from "antd";
+import { Button, Input, notification, Popover, Select, Space, Table, Typography } from "antd";
 import Modal from "antd/lib/modal/Modal";
-import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import swal from "sweetalert";
 import { Auth } from "modules/context";
+import React, { useContext, useEffect, useState } from "react";
+import swal from "sweetalert";
 import deleteIcon from "../../assets/deleteIcon.png";
 
 const { Text } = Typography;
@@ -245,6 +245,7 @@ export default function Index(props) {
         columns={columns}
         dataSource={props.data}
         loading={props.isLoading}
+        style={{boxShadow: "0px 10px 30px rgba(0, 9, 44, 0.1)"}}
       />
     </div>
   );
